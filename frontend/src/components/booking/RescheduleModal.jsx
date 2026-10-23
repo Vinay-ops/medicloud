@@ -97,7 +97,7 @@ export const RescheduleModal = ({ isOpen, onClose, appointment }) => {
               setError('');
             }}
             required
-            className="w-full bg-white text-slate-900 text-sm rounded-lg border border-slate-300 py-2.5 px-3.5 focus:border-teal-600 focus:ring-2 focus:ring-teal-500/15 outline-none cursor-pointer"
+            className="w-full bg-white text-slate-900 text-sm rounded-lg border border-slate-300 py-2.5 px-3.5 focus:border-[#0066FF] focus:ring-2 focus:ring-[#0066FF]/15 outline-none cursor-pointer"
           />
         </div>
 
@@ -123,7 +123,7 @@ export const RescheduleModal = ({ isOpen, onClose, appointment }) => {
                     booked
                       ? 'bg-slate-100 text-slate-400 border-slate-200 cursor-not-allowed line-through'
                       : isSelected
-                      ? 'bg-teal-600 text-white border-teal-600'
+                      ? 'bg-[#0066FF] text-white border-[#0066FF]'
                       : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-200 cursor-pointer'
                   }`}
                 >

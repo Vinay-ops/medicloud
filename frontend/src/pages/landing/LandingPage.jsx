@@ -54,18 +54,18 @@ export const LandingPage = () => {
   return (
     <div className="bg-slate-50 min-h-screen">
       {/* HERO SECTION */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-teal-50/60 via-slate-50 to-white pt-12 pb-20 lg:pt-18 lg:pb-28 border-b border-slate-200/60">
+      <section className="relative overflow-hidden bg-gradient-to-b from-blue-50/60 via-slate-50 to-white pt-12 pb-20 lg:pt-18 lg:pb-28 border-b border-slate-200/60">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <div className="text-center max-w-3xl mx-auto space-y-5">
             {/* Tagline Badge */}
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-teal-100/70 border border-teal-200/90 text-teal-800 text-xs font-semibold shadow-2xs">
-              <Sparkles className="w-3.5 h-3.5 text-teal-600" />
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-100/70 border border-blue-200/90 text-[#0066FF] text-xs font-semibold shadow-2xs">
+              <Sparkles className="w-3.5 h-3.5 text-[#0066FF]" />
               <span>Next-Gen Medical Appointment Platform</span>
             </div>
 
             {/* Headline */}
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-slate-900 tracking-tight leading-[1.15]">
-              Your Health, <span className="text-teal-600">One Click Away.</span>
+              Your Health, <span className="text-[#0066FF]">One Click Away.</span>
             </h1>
 
             {/* Subtitle */}
@@ -105,7 +105,7 @@ export const LandingPage = () => {
                   placeholder="Doctor name or condition..."
                   value={searchName}
                   onChange={(e) => setSearchName(e.target.value)}
-                  className="w-full pl-10 pr-3 py-2.5 rounded-xl border border-slate-200 bg-slate-50/50 text-slate-900 text-sm focus:bg-white focus:border-teal-600 focus:ring-2 focus:ring-teal-500/15 outline-none transition-all placeholder:text-slate-400"
+                  className="w-full pl-10 pr-3 py-2.5 rounded-xl border border-slate-200 bg-slate-50/50 text-slate-900 text-sm focus:bg-white focus:border-[#0066FF] focus:ring-2 focus:ring-[#0066FF]/15 outline-none transition-all placeholder:text-slate-400"
                 />
               </div>
 
@@ -115,7 +115,7 @@ export const LandingPage = () => {
                 <select
                   value={selectedSpecialty}
                   onChange={(e) => setSelectedSpecialty(e.target.value)}
-                  className="w-full pl-10 pr-8 py-2.5 rounded-xl border border-slate-200 bg-slate-50/50 text-slate-900 text-sm focus:bg-white focus:border-teal-600 focus:ring-2 focus:ring-teal-500/15 outline-none transition-all cursor-pointer"
+                  className="w-full pl-10 pr-8 py-2.5 rounded-xl border border-slate-200 bg-slate-50/50 text-slate-900 text-sm focus:bg-white focus:border-[#0066FF] focus:ring-2 focus:ring-[#0066FF]/15 outline-none transition-all cursor-pointer"
                 >
                   <option value="">All Specialties</option>
                   {specialties.map((spec) => (
@@ -135,7 +135,7 @@ export const LandingPage = () => {
                     placeholder="City or state..."
                     value={searchLocation}
                     onChange={(e) => setSearchLocation(e.target.value)}
-                    className="w-full pl-10 pr-3 py-2.5 rounded-xl border border-slate-200 bg-slate-50/50 text-slate-900 text-sm focus:bg-white focus:border-teal-600 focus:ring-2 focus:ring-teal-500/15 outline-none transition-all placeholder:text-slate-400"
+                    className="w-full pl-10 pr-3 py-2.5 rounded-xl border border-slate-200 bg-slate-50/50 text-slate-900 text-sm focus:bg-white focus:border-[#0066FF] focus:ring-2 focus:ring-[#0066FF]/15 outline-none transition-all placeholder:text-slate-400"
                   />
                 </div>
                 <Button type="submit" variant="primary" className="py-2.5 shrink-0 px-4">
@@ -154,7 +154,7 @@ export const LandingPage = () => {
                   key={spec.id}
                   type="button"
                   onClick={() => navigate(`/doctors?specialty=${encodeURIComponent(spec.name)}`)}
-                  className="px-2.5 py-1 rounded-full bg-slate-100 hover:bg-teal-50 hover:text-teal-700 text-slate-600 transition-colors shrink-0 font-medium cursor-pointer"
+                  className="px-2.5 py-1 rounded-full bg-slate-100 hover:bg-blue-50 hover:text-[#0066FF] text-slate-600 transition-colors shrink-0 font-medium cursor-pointer"
                 >
                   {spec.name}
                 </button>
@@ -169,7 +169,7 @@ export const LandingPage = () => {
               <p className="text-xs text-slate-500 mt-0.5">Patients Consulted</p>
             </div>
             <div className="bg-white p-4 rounded-xl border border-slate-200/80 text-center shadow-2xs">
-              <p className="text-2xl font-black text-teal-600">48+</p>
+              <p className="text-2xl font-black text-[#0066FF]">48+</p>
               <p className="text-xs text-slate-500 mt-0.5">Certified Specialists</p>
             </div>
             <div className="bg-white p-4 rounded-xl border border-slate-200/80 text-center shadow-2xs">
@@ -177,7 +177,7 @@ export const LandingPage = () => {
               <p className="text-xs text-slate-500 mt-0.5">Patient Satisfaction</p>
             </div>
             <div className="bg-white p-4 rounded-xl border border-slate-200/80 text-center shadow-2xs">
-              <p className="text-2xl font-black text-teal-600">&lt; 15s</p>
+              <p className="text-2xl font-black text-[#0066FF]">&lt; 15s</p>
               <p className="text-xs text-slate-500 mt-0.5">Instant Booking</p>
             </div>
           </div>
@@ -188,7 +188,7 @@ export const LandingPage = () => {
       <section className="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4 mb-10">
           <div>
-            <div className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-teal-700 mb-1">
+            <div className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-[#0066FF] mb-1">
               <ShieldCheck className="w-4 h-4" />
               <span>Vetted Healthcare Providers</span>
             </div>
@@ -225,7 +225,7 @@ export const LandingPage = () => {
       <section id="how-it-works" className="py-20 bg-slate-100/60 border-y border-slate-200/80">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-16">
-            <span className="text-xs font-bold uppercase tracking-wider text-teal-700 block mb-1">
+            <span className="text-xs font-bold uppercase tracking-wider text-[#0066FF] block mb-1">
               Frictionless Care Delivery
             </span>
             <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight">
@@ -239,7 +239,7 @@ export const LandingPage = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* Step 1 */}
             <div className="bg-white rounded-2xl p-7 border border-slate-200/80 shadow-xs relative">
-              <div className="w-12 h-12 rounded-xl bg-teal-50 border border-teal-100 text-teal-600 flex items-center justify-center font-bold text-lg mb-5">
+              <div className="w-12 h-12 rounded-xl bg-blue-50 border border-blue-100 text-[#0066FF] flex items-center justify-center font-bold text-lg mb-5">
                 01
               </div>
               <h3 className="text-lg font-bold text-slate-900 mb-2">Find Your Specialist</h3>
@@ -250,7 +250,7 @@ export const LandingPage = () => {
 
             {/* Step 2 */}
             <div className="bg-white rounded-2xl p-7 border border-slate-200/80 shadow-xs relative">
-              <div className="w-12 h-12 rounded-xl bg-teal-50 border border-teal-100 text-teal-600 flex items-center justify-center font-bold text-lg mb-5">
+              <div className="w-12 h-12 rounded-xl bg-blue-50 border border-blue-100 text-[#0066FF] flex items-center justify-center font-bold text-lg mb-5">
                 02
               </div>
               <h3 className="text-lg font-bold text-slate-900 mb-2">Pick An Open Slot</h3>
@@ -261,7 +261,7 @@ export const LandingPage = () => {
 
             {/* Step 3 */}
             <div className="bg-white rounded-2xl p-7 border border-slate-200/80 shadow-xs relative">
-              <div className="w-12 h-12 rounded-xl bg-teal-50 border border-teal-100 text-teal-600 flex items-center justify-center font-bold text-lg mb-5">
+              <div className="w-12 h-12 rounded-xl bg-blue-50 border border-blue-100 text-[#0066FF] flex items-center justify-center font-bold text-lg mb-5">
                 03
               </div>
               <h3 className="text-lg font-bold text-slate-900 mb-2">Attend & Manage Care</h3>
@@ -277,7 +277,7 @@ export const LandingPage = () => {
       <section id="about" className="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div>
-            <span className="text-xs font-bold uppercase tracking-wider text-teal-700 block mb-1">
+            <span className="text-xs font-bold uppercase tracking-wider text-[#0066FF] block mb-1">
               Patient-First Technology
             </span>
             <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight leading-tight">
@@ -289,7 +289,7 @@ export const LandingPage = () => {
 
             <div className="mt-8 space-y-4">
               <div className="flex items-start gap-3.5">
-                <div className="w-6 h-6 rounded-full bg-teal-100 text-teal-700 flex items-center justify-center shrink-0 mt-0.5">
+                <div className="w-6 h-6 rounded-full bg-blue-100 text-[#0066FF] flex items-center justify-center shrink-0 mt-0.5">
                   <CheckCircle2 className="w-4 h-4" />
                 </div>
                 <div>
@@ -301,7 +301,7 @@ export const LandingPage = () => {
               </div>
 
               <div className="flex items-start gap-3.5">
-                <div className="w-6 h-6 rounded-full bg-teal-100 text-teal-700 flex items-center justify-center shrink-0 mt-0.5">
+                <div className="w-6 h-6 rounded-full bg-blue-100 text-[#0066FF] flex items-center justify-center shrink-0 mt-0.5">
                   <CheckCircle2 className="w-4 h-4" />
                 </div>
                 <div>
@@ -313,7 +313,7 @@ export const LandingPage = () => {
               </div>
 
               <div className="flex items-start gap-3.5">
-                <div className="w-6 h-6 rounded-full bg-teal-100 text-teal-700 flex items-center justify-center shrink-0 mt-0.5">
+                <div className="w-6 h-6 rounded-full bg-blue-100 text-[#0066FF] flex items-center justify-center shrink-0 mt-0.5">
                   <CheckCircle2 className="w-4 h-4" />
                 </div>
                 <div>
@@ -336,12 +336,12 @@ export const LandingPage = () => {
           <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/90 shadow-lg space-y-6">
             <div className="flex items-center justify-between pb-4 border-b border-slate-100">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-teal-600 text-white flex items-center justify-center">
+                <div className="w-10 h-10 rounded-xl bg-[#0066FF] text-white flex items-center justify-center">
                   <Activity className="w-5 h-5" />
                 </div>
                 <div>
                   <h4 className="text-sm font-bold text-slate-900">Doctor Directory</h4>
-                  <p className="text-2xs text-teal-600 font-semibold">{featuredDoctors.length} clinicians listed</p>
+                  <p className="text-2xs text-[#0066FF] font-semibold">{featuredDoctors.length} clinicians listed</p>
                 </div>
               </div>
               <span className="text-xs px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 font-bold border border-emerald-200">
@@ -352,10 +352,10 @@ export const LandingPage = () => {
             <div className="space-y-3">
               {featuredDoctors.slice(0, 2).map((doctor) => <div key={doctor.id} className="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80 flex items-center justify-between gap-3">
                 <div className="flex items-center gap-3 min-w-0">
-                  <div className="w-10 h-10 rounded-lg bg-teal-100 text-teal-700 flex items-center justify-center font-bold text-sm shrink-0">{doctor.name?.slice(0, 1) || '?'}</div>
+                  <div className="w-10 h-10 rounded-lg bg-blue-100 text-[#0066FF] flex items-center justify-center font-bold text-sm shrink-0">{doctor.name?.slice(0, 1) || '?'}</div>
                   <div className="min-w-0"><h5 className="text-xs font-bold text-slate-800 truncate">{doctor.name} ({doctor.specialty})</h5><p className="text-2xs text-slate-500 truncate">{doctor.hospital} · {formatCurrency(doctor.fee)}</p></div>
                 </div>
-                <span className="text-2xs font-semibold px-2 py-0.5 rounded bg-teal-100 text-teal-800 shrink-0">{doctor.status}</span>
+                <span className="text-2xs font-semibold px-2 py-0.5 rounded bg-blue-100 text-[#0066FF] shrink-0">{doctor.status}</span>
               </div>)}
               {!featuredDoctors.length && <p className="text-sm text-slate-600">Doctor directory data is not available right now.</p>}
             </div>

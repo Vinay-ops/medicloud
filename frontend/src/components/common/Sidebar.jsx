@@ -51,14 +51,14 @@ export const Sidebar = () => {
         {/* User Mini Profile Card */}
         {currentUser && (
           <div className="p-3 bg-slate-50/80 rounded-xl border border-slate-200/80 flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full border border-slate-200 shrink-0 bg-teal-50 text-teal-700 grid place-items-center font-bold" aria-hidden="true">
+            <div className="w-10 h-10 rounded-full border border-blue-200 shrink-0 bg-blue-50 text-[#0066FF] grid place-items-center font-bold" aria-hidden="true">
               {currentUser.name?.slice(0, 1)?.toUpperCase() || <User className="w-4 h-4" />}
             </div>
             <div className="min-w-0 flex-1">
               <h5 className="text-xs font-bold text-slate-900 truncate">{currentUser.name}</h5>
               <div className="flex items-center gap-1.5 mt-0.5">
-                <span className="inline-block w-1.5 h-1.5 rounded-full bg-teal-500" />
-                <span className="text-2xs font-semibold uppercase tracking-wider text-teal-700">
+                <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#0066FF]" />
+                <span className="text-2xs font-semibold uppercase tracking-wider text-[#0066FF]">
                   {currentRole}
                 </span>
               </div>
@@ -80,7 +80,7 @@ export const Sidebar = () => {
                 className={({ isActive }) =>
                   `flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-all ${
                     isActive
-                      ? 'bg-teal-50 text-teal-700 shadow-2xs font-bold'
+                      ? 'bg-blue-50 text-[#0066FF] shadow-2xs font-bold'
                       : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
                   }`
                 }

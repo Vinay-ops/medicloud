@@ -1,12 +1,17 @@
 import React, { useState } from 'react';
-import { Clock, Plus, Trash2, Calendar, Save } from 'lucide-react';
+import { Clock, Plus, Trash2, Calendar, Save, CheckCircle2 } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { useApp } from '../../context/AppContext';
 import { Button } from '../../components/common/Button';
 
 export const DoctorSchedule = () => {
   const { currentUser, doctors } = useApp();
   const doctor = doctors.find((item) => item.id === (currentUser?.doctorId || currentUser?.userId));
-  if (!doctor) return <div className="rounded-xl border border-slate-200 bg-white p-6 text-sm text-slate-600">Your doctor profile and availability could not be loaded.</div>;
+  if (!doctor) return (
+    <div className="rounded-2xl border border-slate-200 bg-white p-6 text-sm text-slate-600">
+      Your doctor profile and availability could not be loaded.
+    </div>
+  );
   return <DoctorScheduleEditor key={doctor.id} doctor={doctor} />;
 };
 
@@ -14,7 +19,6 @@ const DoctorScheduleEditor = ({ doctor }) => {
   const { updateDoctorSlots, showToast } = useApp();
   const [slots, setSlots] = useState(doctor.availableSlots || []);
   const [workingDays, setWorkingDays] = useState(doctor.availableDays || []);
-
   const [newSlotTime, setNewSlotTime] = useState('01:00 PM');
   const [isSaving, setIsSaving] = useState(false);
 
@@ -35,12 +39,10 @@ const DoctorScheduleEditor = ({ doctor }) => {
   const handleAddSlot = (e) => {
     e.preventDefault();
     if (!newSlotTime.trim()) return;
-
     if (slots.includes(newSlotTime.trim())) {
       showToast('This time slot is already listed in your availability', 'error');
       return;
     }
-
     setSlots([...slots, newSlotTime.trim()]);
     showToast(`Added ${newSlotTime} to active slots`, 'success');
   };
@@ -61,32 +63,45 @@ const DoctorScheduleEditor = ({ doctor }) => {
   };
 
   return (
-    <div className="space-y-6 max-w-4xl">
+    <div className="space-y-6 max-w-4xl pb-12">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <motion.div
+        initial={{ opacity: 0, y: 15 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+      >
         <div>
-          <h2 className="text-xl font-bold text-slate-900 tracking-tight">Availability & Time-Slot Management</h2>
-          <p className="text-xs text-slate-500">Configure your weekly consulting days and bookable appointment hours</p>
+          <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#0066FF] mb-1">
+            <Calendar className="w-4 h-4" />
+            <span>Availability Management</span>
+          </div>
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-[#1E293B] tracking-tight">
+            Schedule & Time Slots
+          </h1>
+          <p className="text-xs text-slate-500 mt-1">
+            Configure your weekly consulting days and bookable appointment hours
+          </p>
         </div>
         <Button
           variant="primary"
           leftIcon={Save}
           onClick={handleSaveAll}
           isLoading={isSaving}
+          className="bg-[#0066FF] hover:bg-[#0052CC] font-bold shadow-md rounded-xl"
         >
-          Save Availability Settings
+          Save Availability
         </Button>
-      </div>
+      </motion.div>
 
       {/* Working Days Card */}
-      <div className="bg-white rounded-2xl p-6 border border-slate-200/90 shadow-xs space-y-4">
+      <div className="bg-white rounded-2xl p-6 border border-[#E2E8F0] shadow-sm space-y-4">
         <div>
-          <h3 className="text-sm font-bold uppercase tracking-wider text-slate-900 flex items-center gap-2">
-            <Calendar className="w-4 h-4 text-teal-600" />
+          <h2 className="text-sm font-extrabold uppercase tracking-wider text-[#1E293B] flex items-center gap-2">
+            <Calendar className="w-4 h-4 text-[#0066FF]" />
             <span>Active Consultation Days</span>
-          </h3>
+          </h2>
           <p className="text-xs text-slate-500 mt-0.5">
-            Patients can only book appointments on days selected here.
+            Patients can only book appointments on selected days.
           </p>
         </div>
 
@@ -100,13 +115,13 @@ const DoctorScheduleEditor = ({ doctor }) => {
                 onClick={() => handleToggleDay(day)}
                 className={`py-3 px-2 rounded-xl border text-center transition-all cursor-pointer ${
                   isActive
-                    ? 'bg-teal-50 border-teal-500 text-teal-900 font-bold shadow-2xs'
-                    : 'bg-slate-50 border-slate-200 text-slate-400 hover:bg-slate-100 font-medium'
+                    ? 'bg-gradient-to-b from-[#0066FF] to-[#0052CC] border-[#0066FF] text-white font-bold shadow-sm ring-2 ring-[#0066FF]/20'
+                    : 'bg-slate-50 border-slate-200 text-slate-400 hover:bg-blue-50 hover:border-blue-200 font-medium'
                 }`}
               >
                 <span className="text-xs block">{day.slice(0, 3)}</span>
-                <span className="text-2xs block mt-1 font-semibold">
-                  {isActive ? 'Available' : 'Off'}
+                <span className={`text-[10px] block mt-1 font-semibold ${isActive ? 'text-blue-100' : 'text-slate-400'}`}>
+                  {isActive ? 'Active' : 'Off'}
                 </span>
               </button>
             );
@@ -115,21 +130,21 @@ const DoctorScheduleEditor = ({ doctor }) => {
       </div>
 
       {/* Consultation Time Slots Card */}
-      <div className="bg-white rounded-2xl p-6 border border-slate-200/90 shadow-xs space-y-6">
+      <div className="bg-white rounded-2xl p-6 border border-[#E2E8F0] shadow-sm space-y-6">
         <div>
-          <h3 className="text-sm font-bold uppercase tracking-wider text-slate-900 flex items-center gap-2">
-            <Clock className="w-4 h-4 text-teal-600" />
-            <span>Bookable Consultation Time Slots</span>
-          </h3>
+          <h2 className="text-sm font-extrabold uppercase tracking-wider text-[#1E293B] flex items-center gap-2">
+            <Clock className="w-4 h-4 text-[#0066FF]" />
+            <span>Bookable Time Slots</span>
+          </h2>
           <p className="text-xs text-slate-500 mt-0.5">
-            Real-time appointment slots shown to patients booking appointments with you.
+            Appointment times visible to patients when booking with you.
           </p>
         </div>
 
         {/* Add Slot Form */}
-        <form onSubmit={handleAddSlot} className="flex items-end gap-3 p-4 bg-slate-50 rounded-xl border border-slate-200/80">
+        <form onSubmit={handleAddSlot} className="flex items-end gap-3 p-4 bg-slate-50 rounded-xl border border-slate-200">
           <div className="flex-1 max-w-xs">
-            <label className="text-2xs font-bold uppercase tracking-wider text-slate-600 block mb-1">
+            <label className="text-[10px] font-bold uppercase tracking-wider text-slate-600 block mb-1.5">
               New Time Slot
             </label>
             <input
@@ -137,10 +152,10 @@ const DoctorScheduleEditor = ({ doctor }) => {
               placeholder="e.g. 05:00 PM"
               value={newSlotTime}
               onChange={(e) => setNewSlotTime(e.target.value)}
-              className="w-full bg-white text-slate-900 text-xs rounded-lg border border-slate-300 py-2 px-3 focus:border-teal-600 outline-none"
+              className="w-full bg-white text-[#1E293B] text-xs rounded-xl border border-slate-200 py-2.5 px-3.5 focus:border-[#0066FF] focus:ring-2 focus:ring-[#0066FF]/15 outline-none transition-all"
             />
           </div>
-          <Button type="submit" variant="primary" size="sm" leftIcon={Plus}>
+          <Button type="submit" variant="primary" size="sm" leftIcon={Plus} className="bg-[#0066FF] hover:bg-[#0052CC] font-bold rounded-xl">
             Add Slot
           </Button>
         </form>
@@ -148,31 +163,37 @@ const DoctorScheduleEditor = ({ doctor }) => {
         {/* Existing Slots Grid */}
         <div className="space-y-3">
           <div className="flex items-center justify-between text-xs text-slate-500">
-            <span>Configured Slots ({slots.length})</span>
-            <span>Click trash icon to delete</span>
+            <span className="font-semibold">Configured Slots ({slots.length})</span>
+            <span>Click trash icon to remove</span>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-            {slots.map((slot) => (
-              <div
-                key={slot}
-                className="flex items-center justify-between p-3 rounded-xl bg-white border border-slate-200 hover:border-slate-300 shadow-2xs group"
-              >
-                <div className="flex items-center gap-2 text-xs font-bold text-slate-800">
-                  <Clock className="w-3.5 h-3.5 text-teal-600" />
-                  <span>{slot}</span>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => handleRemoveSlot(slot)}
-                  className="text-slate-300 hover:text-rose-600 p-1 rounded transition-colors cursor-pointer"
-                  title="Remove this slot"
+          {slots.length === 0 ? (
+            <div className="py-6 text-center text-sm text-slate-500">
+              No time slots configured yet. Add your first slot above.
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+              {slots.map((slot) => (
+                <div
+                  key={slot}
+                  className="flex items-center justify-between p-3 rounded-xl bg-white border border-slate-200 hover:border-[#0066FF]/30 shadow-xs group"
                 >
-                  <Trash2 className="w-3.5 h-3.5" />
-                </button>
-              </div>
-            ))}
-          </div>
+                  <div className="flex items-center gap-2 text-xs font-bold text-[#1E293B]">
+                    <Clock className="w-3.5 h-3.5 text-[#0066FF]" />
+                    <span>{slot}</span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveSlot(slot)}
+                    className="text-slate-300 hover:text-rose-600 p-1 rounded transition-colors cursor-pointer"
+                    title="Remove this slot"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </div>

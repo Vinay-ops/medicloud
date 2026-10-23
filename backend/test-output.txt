@@ -1,0 +1,100 @@
+13:00:04 [[32minfo[39m]: Using mock repository (development/test mode) {"service":"medicloud-backend"}
+13:00:04 [[32minfo[39m]: MockRepository initialized with seed data {"service":"medicloud-backend","users":3,"doctors":8,"specialties":8,"appointments":4}
+13:00:04 [[32minfo[39m]: Using mock auth adapter (development mode) {"service":"medicloud-backend"}
+13:00:04 [[32minfo[39m]: MockAuthAdapter initialized (development mode) {"service":"medicloud-backend"}
+13:00:04 [[32minfo[39m]: Using mock email adapter (development mode) {"service":"medicloud-backend"}
+13:00:04 [[32minfo[39m]: MockEmailAdapter initialized (development mode — emails are logged, not sent) {"service":"medicloud-backend"}
+13:00:04 [[32minfo[39m]: Using mock storage adapter (development mode) {"service":"medicloud-backend"}
+13:00:04 [[32minfo[39m]: MockStorageAdapter initialized (development mode — no real files stored) {"service":"medicloud-backend"}
+13:00:04 [[32minfo[39m]: Incoming request {"service":"medicloud-backend","requestId":"27136e92-3d08-42a4-ad05-cf198e92d698","method":"GET","path":"/api/health","ip":"127.0.0.1"}
+13:00:04 [[32minfo[39m]: Request completed {"service":"medicloud-backend","requestId":"27136e92-3d08-42a4-ad05-cf198e92d698","method":"GET","path":"/api/health","statusCode":200}
+▶ GET /api/health
+  ✔ should return 200 OK with service details and timestamp (83.0211ms)
+✔ GET /api/health (85.1759ms)
+13:00:04 [[32minfo[39m]: Using mock repository (development/test mode) {"service":"medicloud-backend"}
+13:00:04 [[32minfo[39m]: MockRepository initialized with seed data {"service":"medicloud-backend","users":3,"doctors":8,"specialties":8,"appointments":4}
+13:00:04 [[32minfo[39m]: Using mock auth adapter (development mode) {"service":"medicloud-backend"}
+13:00:04 [[32minfo[39m]: MockAuthAdapter initialized (development mode) {"service":"medicloud-backend"}
+13:00:04 [[32minfo[39m]: Using mock email adapter (development mode) {"service":"medicloud-backend"}
+13:00:04 [[32minfo[39m]: MockEmailAdapter initialized (development mode — emails are logged, not sent) {"service":"medicloud-backend"}
+13:00:04 [[32minfo[39m]: Using mock storage adapter (development mode) {"service":"medicloud-backend"}
+13:00:04 [[32minfo[39m]: MockStorageAdapter initialized (development mode — no real files stored) {"service":"medicloud-backend"}
+13:00:04 [[32minfo[39m]: Incoming request {"service":"medicloud-backend","requestId":"80d517a0-3bc4-401d-878f-7ea04eb0e5ef","method":"GET","path":"/api/undefined-endpoint-for-testing","ip":"127.0.0.1"}
+13:00:04 [[32minfo[39m]: Request completed {"service":"medicloud-backend","requestId":"80d517a0-3bc4-401d-878f-7ea04eb0e5ef","method":"GET","path":"/api/undefined-endpoint-for-testing","statusCode":404}
+▶ 404 Route Not Found
+  ✔ should return 404 with standard JSON error payload for undefined GET route (80.4339ms)
+13:00:04 [[32minfo[39m]: Incoming request {"service":"medicloud-backend","requestId":"a7a804af-0e60-4d6b-bd37-5016291997eb","method":"POST","path":"/some-random-page","ip":"127.0.0.1"}
+13:00:04 [[32minfo[39m]: Request completed {"service":"medicloud-backend","requestId":"a7a804af-0e60-4d6b-bd37-5016291997eb","method":"POST","path":"/some-random-page","statusCode":404}
+  ✔ should return 404 with standard JSON error payload for undefined POST route (35.1923ms)
+✔ 404 Route Not Found (118.5744ms)
+13:00:04 [[32minfo[39m]: Using mock repository (development/test mode) {"service":"medicloud-backend"}
+13:00:04 [[32minfo[39m]: MockRepository initialized with seed data {"service":"medicloud-backend","users":3,"doctors":8,"specialties":8,"appointments":4}
+13:00:04 [[32minfo[39m]: Using mock auth adapter (development mode) {"service":"medicloud-backend"}
+13:00:04 [[32minfo[39m]: MockAuthAdapter initialized (development mode) {"service":"medicloud-backend"}
+13:00:04 [[32minfo[39m]: Using mock email adapter (development mode) {"service":"medicloud-backend"}
+13:00:04 [[32minfo[39m]: MockEmailAdapter initialized (development mode — emails are logged, not sent) {"service":"medicloud-backend"}
+13:00:04 [[32minfo[39m]: Using mock storage adapter (development mode) {"service":"medicloud-backend"}
+13:00:04 [[32minfo[39m]: MockStorageAdapter initialized (development mode — no real files stored) {"service":"medicloud-backend"}
+13:00:04 [[32minfo[39m]: Incoming request {"service":"medicloud-backend","requestId":"ca6422bd-09ef-4f68-998a-2c67e91b5a38","method":"POST","path":"/api/auth/register","ip":"127.0.0.1"}
+▶ Auth Routes
+  ✖ POST /api/auth/register — creates a new patient account (84.2201ms)
+13:00:04 [[32minfo[39m]: Incoming request {"service":"medicloud-backend","requestId":"86c28dc2-76d1-4782-939f-c20b21e3c328","method":"POST","path":"/api/auth/register","ip":"127.0.0.1"}
+  ✖ POST /api/auth/register — rejects duplicate email with 400 (16.1183ms)
+13:00:04 [[32minfo[39m]: Incoming request {"service":"medicloud-backend","requestId":"4b6d8b62-526b-4f47-90fb-8c259d51774a","method":"POST","path":"/api/auth/register","ip":"127.0.0.1"}
+13:00:04 [[32minfo[39m]: Request completed {"service":"medicloud-backend","requestId":"4b6d8b62-526b-4f47-90fb-8c259d51774a","method":"POST","path":"/api/auth/register","statusCode":400}
+  ✔ POST /api/auth/register — rejects weak password (22.2244ms)
+13:00:04 [[32minfo[39m]: Incoming request {"service":"medicloud-backend","requestId":"d846d262-94f0-4228-b7e6-6bb67accd059","method":"POST","path":"/api/auth/register","ip":"127.0.0.1"}
+  ✖ POST /api/auth/login — valid credentials return token (8.4456ms)
+13:00:04 [[32minfo[39m]: Incoming request {"service":"medicloud-backend","requestId":"ed6c87d6-c0c1-40bf-88f5-2d745de30622","method":"POST","path":"/api/auth/register","ip":"127.0.0.1"}
+  ✖ POST /api/auth/login — wrong password returns 401 (8.4084ms)
+13:00:04 [[32minfo[39m]: Incoming request {"service":"medicloud-backend","requestId":"1056749e-58e0-40a8-9782-5286a48f235f","method":"POST","path":"/api/auth/register","ip":"127.0.0.1"}
+  ✖ GET /api/auth/me — authenticated request returns user profile (10.2716ms)
+13:00:04 [[32minfo[39m]: Incoming request {"service":"medicloud-backend","requestId":"17f9d45b-a4ec-4fc4-9203-542a21888eca","method":"GET","path":"/api/auth/me","ip":"127.0.0.1"}
+13:00:04 [[32minfo[39m]: Request completed {"service":"medicloud-backend","requestId":"17f9d45b-a4ec-4fc4-9203-542a21888eca","method":"GET","path":"/api/auth/me","statusCode":401}
+  ✔ GET /api/auth/me — unauthenticated request returns 401 (15.046ms)
+13:00:04 [[32minfo[39m]: Incoming request {"service":"medicloud-backend","requestId":"43e6754e-bfcd-4913-a296-65975f101d7c","method":"GET","path":"/api/auth/me","ip":"127.0.0.1"}
+13:00:04 [[33mwarn[39m]: Authentication failed {"service":"medicloud-backend","error":"INVALID_TOKEN_FORMAT","requestId":"43e6754e-bfcd-4913-a296-65975f101d7c"}
+13:00:04 [[32minfo[39m]: Request completed {"service":"medicloud-backend","requestId":"43e6754e-bfcd-4913-a296-65975f101d7c","method":"GET","path":"/api/auth/me","statusCode":401}
+  ✔ GET /api/auth/me — expired/invalid token returns 401 (11.2684ms)
+✖ Auth Routes (179.668ms)
+13:00:04 [[32minfo[39m]: Incoming request {"service":"medicloud-backend","requestId":"d67dd0fc-6351-44e9-ba99-06ce73b5c4ef","method":"GET","path":"/api/doctors","ip":"127.0.0.1"}
+13:00:04 [[32minfo[39m]: Request completed {"service":"medicloud-backend","requestId":"d67dd0fc-6351-44e9-ba99-06ce73b5c4ef","method":"GET","path":"/api/doctors","statusCode":200}
+▶ Doctors Routes
+  ✔ GET /api/doctors — returns doctor list (public, no auth required) (13.0546ms)
+13:00:04 [[32minfo[39m]: Incoming request {"service":"medicloud-backend","requestId":"b3532aaf-1c40-44b5-a836-f8da6e884822","method":"GET","path":"/api/doctors?specialty=Cardiology","ip":"127.0.0.1"}
+13:00:04 [[32minfo[39m]: Request completed {"service":"medicloud-backend","requestId":"b3532aaf-1c40-44b5-a836-f8da6e884822","method":"GET","path":"/api/doctors?specialty=Cardiology","statusCode":200}
+  ✔ GET /api/doctors — filters by specialty (19.1981ms)
+13:00:04 [[32minfo[39m]: Incoming request {"service":"medicloud-backend","requestId":"6ddbd698-f417-4b07-b8eb-8e0a97012045","method":"GET","path":"/api/doctors/doc-1","ip":"127.0.0.1"}
+13:00:05 [[32minfo[39m]: Request completed {"service":"medicloud-backend","requestId":"6ddbd698-f417-4b07-b8eb-8e0a97012045","method":"GET","path":"/api/doctors/doc-1","statusCode":200}
+  ✔ GET /api/doctors/:id — returns a single doctor by ID (11.4932ms)
+13:00:05 [[32minfo[39m]: Incoming request {"service":"medicloud-backend","requestId":"b284b7ab-3540-4788-befb-4f4082aa44b7","method":"GET","path":"/api/doctors/doc-does-not-exist","ip":"127.0.0.1"}
+13:00:05 [[32minfo[39m]: Request completed {"service":"medicloud-backend","requestId":"b284b7ab-3540-4788-befb-4f4082aa44b7","method":"GET","path":"/api/doctors/doc-does-not-exist","statusCode":404}
+  ✔ GET /api/doctors/:id — returns 404 for unknown doctor (8.8079ms)
+13:00:05 [[32minfo[39m]: Incoming request {"service":"medicloud-backend","requestId":"fbead0d7-b1ae-40c9-b5ba-5e219b0bad91","method":"POST","path":"/api/auth/register","ip":"127.0.0.1"}
+  ✖ POST /api/doctors — returns 403 when called with patient token (5.6687ms)
+13:00:05 [[32minfo[39m]: Incoming request {"service":"medicloud-backend","requestId":"1495b36a-46a5-47ac-aeb0-027048304a4d","method":"GET","path":"/api/doctors/specialties","ip":"127.0.0.1"}
+13:00:05 [[32minfo[39m]: Request completed {"service":"medicloud-backend","requestId":"1495b36a-46a5-47ac-aeb0-027048304a4d","method":"GET","path":"/api/doctors/specialties","statusCode":200}
+  ✔ GET /api/doctors/specialties — returns all specialties (public) (8.961ms)
+✖ Doctors Routes (68.2558ms)
+13:00:05 [[32minfo[39m]: Incoming request {"service":"medicloud-backend","requestId":"9845493f-b010-4949-a2ad-d98a590cd361","method":"POST","path":"/api/appointments","ip":"127.0.0.1"}
+13:00:05 [[32minfo[39m]: Request completed {"service":"medicloud-backend","requestId":"9845493f-b010-4949-a2ad-d98a590cd361","method":"POST","path":"/api/appointments","statusCode":401}
+▶ Appointments Routes
+  ✔ POST /api/appointments — returns 401 without authentication (10.4097ms)
+13:00:05 [[32minfo[39m]: Incoming request {"service":"medicloud-backend","requestId":"24ad2422-42da-4e51-8540-815afffbc680","method":"POST","path":"/api/auth/register","ip":"127.0.0.1"}
+  ✖ POST /api/appointments — books an appointment for authenticated patient (7.0027ms)
+13:00:05 [[32minfo[39m]: Incoming request {"service":"medicloud-backend","requestId":"8615e3d4-b717-4cae-97de-b7d5f5ab5fc5","method":"POST","path":"/api/auth/register","ip":"127.0.0.1"}
+  ✖ POST /api/appointments — prevents double-booking the same slot (5.8321ms)
+13:00:05 [[32minfo[39m]: Incoming request {"service":"medicloud-backend","requestId":"d6fc9c65-f083-4776-8c04-7d1f56e5f12a","method":"POST","path":"/api/auth/register","ip":"127.0.0.1"}
+  ✖ POST /api/appointments — rejects booking on doctor non-working day (6.931ms)
+13:00:05 [[32minfo[39m]: Incoming request {"service":"medicloud-backend","requestId":"98edc440-a753-4a01-9a3b-95a512e941d7","method":"POST","path":"/api/auth/register","ip":"127.0.0.1"}
+  ✖ GET /api/appointments/me — returns authenticated patient appointments (5.4738ms)
+✖ Appointments Routes (36.7112ms)
+13:00:05 [[32minfo[39m]: Incoming request {"service":"medicloud-backend","requestId":"d08c3590-1b3a-41d6-8263-8d9514f2ad40","method":"POST","path":"/api/auth/register","ip":"127.0.0.1"}
+▶ Admin Routes
+  ✖ GET /api/admin/stats — returns 403 for patient role (7.344ms)
+13:00:05 [[32minfo[39m]: Incoming request {"service":"medicloud-backend","requestId":"6bb86f79-5929-46a3-a2b7-f72aae60aac4","method":"GET","path":"/api/admin/stats","ip":"127.0.0.1"}
+13:00:05 [[32minfo[39m]: Request completed {"service":"medicloud-backend","requestId":"6bb86f79-5929-46a3-a2b7-f72aae60aac4","method":"GET","path":"/api/admin/stats","statusCode":401}
+  ✔ GET /api/admin/stats — returns 401 without authentication (7.6674ms)
+13:00:05 [[32minfo[39m]: Incoming request {"service":"medicloud-backend","requestId":"7c8df3a5-0af0-494f-bfa2-f05e138beb82","method":"POST","path":"/api/auth/register","ip":"127.0.0.1"}
+  ✖ GET /api/admin/appointments — returns 403 for patient role (5.5474ms)
+✖ Admin Routes (21.2394ms)

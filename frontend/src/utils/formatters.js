@@ -26,11 +26,12 @@ export const formatDate = (dateStr) => {
 };
 
 export const formatCurrency = (amount) => {
-  return new Intl.NumberFormat('en-US', {
+  const num = Number(amount) || 0;
+  return new Intl.NumberFormat('en-IN', {
     style: 'currency',
-    currency: 'USD',
+    currency: 'INR',
     maximumFractionDigits: 0
-  }).format(amount);
+  }).format(num);
 };
 
 export const getStatusConfig = (status) => {
@@ -50,8 +51,8 @@ export const getStatusConfig = (status) => {
     case 'completed':
       return {
         label: 'Completed',
-        bg: 'bg-blue-50 text-blue-700 border-blue-200',
-        dot: 'bg-blue-500'
+        bg: 'bg-blue-50 text-[#0066FF] border-blue-200',
+        dot: 'bg-[#0066FF]'
       };
     case 'cancelled':
     case 'rejected':
@@ -63,8 +64,8 @@ export const getStatusConfig = (status) => {
     case 'active':
       return {
         label: 'Active Provider',
-        bg: 'bg-teal-50 text-teal-700 border-teal-200',
-        dot: 'bg-teal-500'
+        bg: 'bg-cyan-50 text-cyan-800 border-cyan-200',
+        dot: 'bg-cyan-500'
       };
     case 'inactive':
       return {

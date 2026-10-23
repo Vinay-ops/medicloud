@@ -56,7 +56,7 @@ export const AdminAppointments = () => {
             placeholder="Search by ref ID, patient, or doctor..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-9 pr-3.5 py-2 rounded-xl border border-slate-200 text-xs bg-slate-50/50 text-slate-900 focus:bg-white focus:border-teal-600 focus:ring-2 focus:ring-teal-500/15 outline-none"
+            className="w-full pl-9 pr-3.5 py-2 rounded-xl border border-slate-200 text-xs bg-slate-50/50 text-slate-900 focus:bg-white focus:border-[#0066FF] focus:ring-2 focus:ring-[#0066FF]/15 outline-none"
           />
         </div>
 
@@ -101,7 +101,7 @@ export const AdminAppointments = () => {
                 setStatusFilter('');
                 setDoctorFilter('');
               }}
-              className="text-teal-700 font-bold hover:underline cursor-pointer"
+              className="text-[#0066FF] font-bold hover:underline cursor-pointer"
             >
               Clear Filters
             </button>
@@ -141,7 +141,7 @@ export const AdminAppointments = () => {
                     </td>
                     <td className="py-3 px-4">
                       <div className="font-bold text-slate-900">{apt.doctorName}</div>
-                      <div className="text-2xs text-teal-700">{apt.doctorSpecialty}</div>
+                      <div className="text-2xs text-[#0066FF]">{apt.doctorSpecialty}</div>
                     </td>
                     <td className="py-3 px-4 text-slate-600">
                       <div>{formatDate(apt.date)}</div>
@@ -161,7 +161,7 @@ export const AdminAppointments = () => {
                         variant="ghost"
                         size="sm"
                         onClick={() => setSelectedApt(apt)}
-                        className="text-xs text-teal-700 hover:text-teal-800"
+                        className="text-xs text-[#0066FF] hover:text-[#0052cc]"
                       >
                         Audit
                       </Button>
@@ -193,7 +193,7 @@ export const AdminAppointments = () => {
               <div className="p-3 bg-slate-50 rounded-xl border border-slate-100">
                 <span className="text-slate-400 block font-semibold text-2xs uppercase">Assigned Doctor</span>
                 <span className="font-bold text-slate-800 mt-0.5 block">{selectedApt.doctorName}</span>
-                <span className="text-teal-700 block">{selectedApt.doctorSpecialty}</span>
+                <span className="text-[#0066FF] block">{selectedApt.doctorSpecialty}</span>
               </div>
             </div>
 

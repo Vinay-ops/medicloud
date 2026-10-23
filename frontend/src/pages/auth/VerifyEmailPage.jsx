@@ -76,8 +76,8 @@ export const VerifyEmailPage = () => {
     <div className="min-h-screen bg-slate-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <Link to="/" className="flex items-center justify-center gap-2.5 mb-6 group">
-          <div className="w-10 h-10 rounded-xl bg-teal-600 text-white flex items-center justify-center shadow-xs"><Activity className="w-6 h-6" /></div>
-          <span className="text-2xl font-extrabold text-slate-900 tracking-tight">Medi<span className="text-teal-600">Cloud</span></span>
+          <div className="w-10 h-10 rounded-xl bg-[#0066FF] text-white flex items-center justify-center shadow-xs"><Activity className="w-6 h-6" /></div>
+          <span className="text-2xl font-extrabold text-slate-900 tracking-tight">Medi<span className="text-[#0066FF]">Cloud</span></span>
         </Link>
         <h1 className="text-center text-2xl font-extrabold text-slate-900 tracking-tight">Verify Your Email</h1>
         <p className="mt-2 text-center text-sm text-slate-600">
@@ -102,13 +102,13 @@ export const VerifyEmailPage = () => {
               required
             />
             {error && <p role="alert" className="text-sm text-rose-700">{error}</p>}
-            {notice && <p role="status" className="text-sm text-teal-800">{notice}</p>}
-            {alreadyConfirmed && <Link to="/login" state={{ email }} className="block text-sm font-semibold text-teal-700 hover:underline">Go to sign in</Link>}
+            {notice && <p role="status" className="text-sm text-[#0066FF]">{notice}</p>}
+            {alreadyConfirmed && <Link to="/login" state={{ email }} className="block text-sm font-semibold text-[#0066FF] hover:underline">Go to sign in</Link>}
             <Button type="submit" variant="primary" className="w-full justify-center py-2.5" isLoading={isVerifying} rightIcon={ArrowRight}>Verify Email</Button>
           </form>
           <div className="flex flex-col items-center gap-3 mt-5">
             <Button type="button" variant="secondary" className="w-full justify-center" isLoading={isResending} disabled={isVerifying} onClick={handleResend}>Resend Code</Button>
-            <Link to="/login" state={{ email }} className="text-sm font-semibold text-teal-700 hover:underline">Back to sign in</Link>
+            <Link to="/login" state={{ email }} className="text-sm font-semibold text-[#0066FF] hover:underline">Back to sign in</Link>
           </div>
         </div>
       </div>

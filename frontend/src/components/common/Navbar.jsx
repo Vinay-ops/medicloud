@@ -31,15 +31,15 @@ export const Navbar = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-18">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2.5 group">
-            <div className="w-10 h-10 rounded-xl bg-teal-600 text-white flex items-center justify-center shadow-xs group-hover:bg-teal-700 transition-colors">
+          <Link to="/dashboard" className="flex items-center gap-2.5 group">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#0066FF] to-[#06B6D4] text-white flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform">
               <Activity className="w-6 h-6" />
             </div>
             <div>
-              <span className="text-xl font-extrabold text-slate-900 tracking-tight flex items-center gap-1">
-                Medi<span className="text-teal-600">Cloud</span>
+              <span className="text-xl font-extrabold text-[#1E293B] tracking-tight flex items-center">
+                Medi<span className="text-[#0066FF]">Cloud</span>
               </span>
-              <span className="text-2xs text-slate-400 block -mt-1 font-medium">Healthcare SaaS</span>
+              <span className="text-2xs text-[#06B6D4] block -mt-1 font-bold">Health Platform</span>
             </div>
           </Link>
 
@@ -52,7 +52,7 @@ export const Navbar = () => {
                   key={link.label}
                   to={link.path}
                   className={`text-sm font-semibold transition-colors ${
-                    isActive ? 'text-teal-600' : 'text-slate-600 hover:text-slate-900'
+                    isActive ? 'text-[#0066FF]' : 'text-slate-600 hover:text-slate-900'
                   }`}
                 >
                   {link.label}
@@ -119,7 +119,7 @@ export const Navbar = () => {
                 key={link.label}
                 to={link.path}
                 onClick={() => setMobileMenuOpen(false)}
-                className="px-3 py-2 rounded-lg text-sm font-semibold text-slate-700 hover:bg-slate-50 hover:text-teal-600"
+                className="px-3 py-2 rounded-lg text-sm font-semibold text-slate-700 hover:bg-slate-50 hover:text-[#0066FF]"
               >
                 {link.label}
               </Link>

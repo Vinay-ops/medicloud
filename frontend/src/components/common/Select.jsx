@@ -21,7 +21,7 @@ export const Select = ({
   return (
     <div className={`flex flex-col gap-1.5 w-full ${className}`}>
       {label && (
-        <label htmlFor={selectId} className="text-xs font-semibold text-slate-700 tracking-wide uppercase">
+        <label htmlFor={selectId} className="text-xs font-bold text-slate-700 tracking-wide uppercase">
           {label} {required && <span className="text-rose-500">*</span>}
         </label>
       )}
@@ -37,12 +37,12 @@ export const Select = ({
           onChange={onChange}
           disabled={disabled}
           required={required}
-          className={`w-full appearance-none bg-white text-slate-900 text-sm rounded-lg border transition-all duration-150 py-2.5 pr-10 ${
+          className={`w-full appearance-none bg-white text-[#1E293B] text-sm rounded-xl border transition-all duration-150 py-2.5 pr-10 ${
             Icon ? 'pl-10' : 'px-3.5'
           } ${
             error
-              ? 'border-rose-400 focus:border-rose-500 focus:ring-2 focus:ring-rose-500/20'
-              : 'border-slate-300 focus:border-teal-600 focus:ring-2 focus:ring-teal-500/15'
+              ? 'border-rose-400 focus:border-rose-500 focus:ring-2 focus:ring-rose-500/15'
+              : 'border-[#E2E8F0] hover:border-slate-300 focus:border-[#0066FF] focus:ring-2 focus:ring-[#0066FF]/15'
           } disabled:bg-slate-50 disabled:text-slate-400 shadow-2xs outline-none cursor-pointer`}
           {...props}
         >
@@ -66,7 +66,7 @@ export const Select = ({
           <ChevronDown className="w-4 h-4" />
         </div>
       </div>
-      {error && <p className="text-xs text-rose-600 font-medium mt-0.5">{error}</p>}
+      {error && <p role="alert" className="text-xs text-rose-600 font-medium mt-0.5">{error}</p>}
       {!error && helperText && <p className="text-xs text-slate-500 mt-0.5">{helperText}</p>}
     </div>
   );

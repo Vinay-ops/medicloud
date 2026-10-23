@@ -14,21 +14,28 @@ export const Button = ({
   type = 'button',
   ...props
 }) => {
-  const baseClasses = 'inline-flex items-center justify-center font-medium transition-all duration-150 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500/20 active:scale-[0.99] disabled:opacity-50 disabled:pointer-events-none cursor-pointer';
+  const baseClasses =
+    'inline-flex items-center justify-center font-semibold transition-all duration-150 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#0066FF]/25 active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none cursor-pointer';
 
   const sizeClasses = {
     sm: 'text-xs px-3 py-1.5 gap-1.5',
     md: 'text-sm px-4 py-2.5 gap-2',
-    lg: 'text-base px-5 py-3 gap-2.5'
+    lg: 'text-base px-5 py-3 gap-2.5',
   };
 
   const variantClasses = {
-    primary: 'bg-teal-600 hover:bg-teal-700 text-white shadow-sm hover:shadow border border-teal-700/20',
-    secondary: 'bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 shadow-xs',
-    outline: 'bg-transparent border border-teal-600 text-teal-700 hover:bg-teal-50/70',
-    ghost: 'bg-transparent hover:bg-slate-100 text-slate-600 hover:text-slate-900',
-    danger: 'bg-rose-600 hover:bg-rose-700 text-white shadow-xs',
-    subtle: 'bg-teal-50 hover:bg-teal-100 text-teal-800 border border-teal-100'
+    primary:
+      'bg-[#0066FF] hover:bg-[#0052CC] text-white shadow-xs hover:shadow border border-blue-600/30',
+    secondary:
+      'bg-white hover:bg-slate-50 text-[#1E293B] border border-[#E2E8F0] shadow-xs hover:border-slate-300',
+    outline:
+      'bg-transparent border border-[#0066FF] text-[#0066FF] hover:bg-blue-50/60',
+    ghost:
+      'bg-transparent hover:bg-slate-100 text-slate-600 hover:text-[#1E293B]',
+    danger:
+      'bg-rose-600 hover:bg-rose-700 text-white shadow-xs',
+    subtle:
+      'bg-blue-50 hover:bg-blue-100/80 text-[#0066FF] border border-blue-100',
   };
 
   return (
@@ -36,7 +43,9 @@ export const Button = ({
       type={type}
       disabled={disabled || isLoading}
       onClick={onClick}
-      className={`${baseClasses} ${sizeClasses[size]} ${variantClasses[variant]} ${className}`}
+      className={`${baseClasses} ${sizeClasses[size] || sizeClasses.md} ${
+        variantClasses[variant] || variantClasses.primary
+      } ${className}`}
       {...props}
     >
       {isLoading ? (

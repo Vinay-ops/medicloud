@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Activity, Mail, Lock, Phone, ArrowRight } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Activity, Mail, Lock, Phone, ArrowRight, ShieldCheck, HeartPulse, User } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { Button } from '../../components/common/Button';
 import { Input } from '../../components/common/Input';
@@ -19,7 +20,7 @@ export const RegisterPage = () => {
     gender: 'Female',
     bloodGroup: 'O+',
     password: '',
-    confirmPassword: ''
+    confirmPassword: '',
   });
 
   const [errors, setErrors] = useState({});
@@ -41,7 +42,7 @@ export const RegisterPage = () => {
     if (!formData.email.trim()) {
       errs.email = 'Email address is required';
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      errs.email = 'Please provide a valid email format';
+      errs.email = 'Please provide a valid email address';
     }
 
     if (!formData.phone.trim()) {
@@ -50,8 +51,8 @@ export const RegisterPage = () => {
 
     if (!formData.password) {
       errs.password = 'Password is required';
-    } else if (formData.password.length < 8) {
-      errs.password = 'Must be at least 8 characters';
+    } else if (formData.password.length < 6) {
+      errs.password = 'Must be at least 6 characters';
     }
 
     if (formData.password !== formData.confirmPassword) {
@@ -71,7 +72,8 @@ export const RegisterPage = () => {
     try {
       const result = await registerPatient(formData);
       if (result.token) {
-        navigate('/patient/dashboard', { replace: true });
+        showToast('Registration successful! Directing to dashboard.');
+        navigate('/dashboard', { replace: true });
         return;
       }
       if (result.needsConfirmation) {
@@ -83,7 +85,7 @@ export const RegisterPage = () => {
           },
         });
       } else {
-        navigate('/login', {
+        navigate('/auth/login', {
           replace: true,
           state: { registered: true, email: formData.email.trim() },
         });
@@ -97,34 +99,83 @@ export const RegisterPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-      <div className="sm:mx-auto sm:w-full sm:max-w-xl">
-        <Link to="/" className="flex items-center justify-center gap-2.5 mb-6 group">
-          <div className="w-10 h-10 rounded-xl bg-teal-600 text-white flex items-center justify-center shadow-xs">
-            <Activity className="w-6 h-6" />
+    <div className="min-h-screen bg-[#F8FAFC] flex flex-col lg:flex-row">
+      {/* Left Visual Branding Container */}
+      <motion.div
+        initial={{ opacity: 0, x: -30 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.6 }}
+        className="lg:w-5/12 bg-gradient-to-br from-[#0066FF] via-[#0052CC] to-[#06B6D4] p-8 sm:p-12 lg:p-16 flex flex-col justify-between text-white relative overflow-hidden"
+      >
+        <div className="relative z-10">
+          <Link to="/" className="inline-flex items-center gap-3 group">
+            <div className="w-12 h-12 rounded-2xl bg-white/15 backdrop-blur-md border border-white/30 flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform">
+              <HeartPulse className="w-7 h-7 text-white" />
+            </div>
+            <div>
+              <span className="text-2xl font-black tracking-tight text-white flex items-center">
+                Medi<span className="text-cyan-300">Cloud</span>
+              </span>
+              <span className="text-xs uppercase tracking-widest text-blue-100 font-semibold block">Health Intelligence</span>
+            </div>
+          </Link>
+        </div>
+
+        <div className="relative z-10 my-10 space-y-6">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/15 backdrop-blur-md border border-white/20 text-xs font-semibold tracking-wide">
+            <ShieldCheck className="w-4 h-4 text-cyan-300" />
+            <span>Join 2,500+ Active Patients</span>
           </div>
-          <span className="text-2xl font-extrabold text-slate-900 tracking-tight">
-            Medi<span className="text-teal-600">Cloud</span>
-          </span>
-        </Link>
+          <h1 className="text-3xl sm:text-4xl font-black tracking-tight leading-tight">
+            Comprehensive Medical Care At Your Fingertips.
+          </h1>
+          <p className="text-blue-100 text-sm leading-relaxed">
+            Register your profile once to effortlessly book specialist slots, manage clinic appointments, and review your vital health metrics.
+          </p>
 
-        <h2 className="text-center text-2xl font-extrabold text-slate-900 tracking-tight">
-          Create Your Patient Account
-        </h2>
-        <p className="mt-1 text-center text-xs text-slate-500">
-          Create an account to book and manage healthcare appointments
-        </p>
-      </div>
+          <div className="space-y-3 pt-2">
+            <div className="flex items-center gap-3 text-xs bg-white/10 rounded-xl p-3 border border-white/15">
+              <span className="w-2 h-2 rounded-full bg-cyan-300" />
+              <span>Real-time instant appointment booking confirmations</span>
+            </div>
+            <div className="flex items-center gap-3 text-xs bg-white/10 rounded-xl p-3 border border-white/15">
+              <span className="w-2 h-2 rounded-full bg-cyan-300" />
+              <span>Seamless video telemedicine & clinic consultations</span>
+            </div>
+            <div className="flex items-center gap-3 text-xs bg-white/10 rounded-xl p-3 border border-white/15">
+              <span className="w-2 h-2 rounded-full bg-cyan-300" />
+              <span>Persistent patient health profile & document storage</span>
+            </div>
+          </div>
+        </div>
 
-      <div className="mt-6 sm:mx-auto sm:w-full sm:max-w-xl px-4">
-        <div className="bg-white py-8 px-6 sm:px-10 rounded-2xl shadow-md border border-slate-200/90 space-y-6">
+        <div className="relative z-10 text-xs text-blue-100">
+          &copy; {new Date().getFullYear()} MediCloud Platform. All clinical records encrypted.
+        </div>
+      </motion.div>
+
+      {/* Right Registration Form */}
+      <motion.div
+        initial={{ opacity: 0, x: 30 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.6 }}
+        className="lg:w-7/12 flex items-center justify-center p-6 sm:p-12 lg:p-16 overflow-y-auto"
+      >
+        <div className="w-full max-w-xl space-y-8">
+          <div>
+            <h2 className="text-3xl font-extrabold text-[#1E293B] tracking-tight">Create Patient Account</h2>
+            <p className="mt-1 text-sm text-slate-500">
+              Complete your patient profile to connect with leading specialists.
+            </p>
+          </div>
+
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <Input
                 label="First Name"
                 value={formData.firstName}
                 onChange={(e) => handleChange('firstName', e.target.value)}
-                placeholder="Your first name"
+                placeholder="e.g. John"
                 error={errors.firstName}
                 required
               />
@@ -132,7 +183,7 @@ export const RegisterPage = () => {
                 label="Last Name"
                 value={formData.lastName}
                 onChange={(e) => handleChange('lastName', e.target.value)}
-                placeholder="Your last name"
+                placeholder="e.g. Doe"
                 error={errors.lastName}
                 required
               />
@@ -144,7 +195,7 @@ export const RegisterPage = () => {
                 type="email"
                 value={formData.email}
                 onChange={(e) => handleChange('email', e.target.value)}
-                placeholder="name@example.com"
+                placeholder="john.doe@example.com"
                 icon={Mail}
                 error={errors.email}
                 required
@@ -153,7 +204,7 @@ export const RegisterPage = () => {
                 label="Phone Number"
                 value={formData.phone}
                 onChange={(e) => handleChange('phone', e.target.value)}
-                placeholder="+1 (555) 234-5678"
+                placeholder="+91 98765 43210"
                 icon={Phone}
                 error={errors.phone}
                 required
@@ -204,28 +255,40 @@ export const RegisterPage = () => {
               />
             </div>
 
+            <AnimatePresence>
+              {submitError && (
+                <motion.div
+                  initial={{ opacity: 0, y: -8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -8 }}
+                  className="p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-medium"
+                >
+                  {submitError}
+                </motion.div>
+              )}
+            </AnimatePresence>
+
             <div className="pt-2">
-              {submitError && <p role="alert" className="mb-3 text-sm text-rose-700">{submitError}</p>}
               <Button
                 type="submit"
                 variant="primary"
-                className="w-full justify-center py-2.5"
+                className="w-full justify-center py-3 bg-[#0066FF] hover:bg-[#0052CC] text-white shadow-md rounded-xl font-semibold text-base transition-all"
                 isLoading={isLoading}
                 rightIcon={ArrowRight}
               >
-                Create Account
+                Create Account & Go to Dashboard
               </Button>
             </div>
           </form>
 
-          <div className="text-center text-xs text-slate-500 pt-3 border-t border-slate-100">
-            Already have an account?{' '}
-            <Link to="/login" className="font-semibold text-teal-700 hover:underline">
-              Sign in to MediCloud
+          <div className="text-center text-sm text-slate-500 pt-4 border-t border-[#E2E8F0]">
+            Already have a MediCloud account?{' '}
+            <Link to="/auth/login" className="font-semibold text-[#0066FF] hover:underline">
+              Sign In
             </Link>
           </div>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 };

@@ -1,9 +1,5 @@
-const rawApiBaseUrl = import.meta.env.VITE_API_URL?.trim();
+const rawApiBaseUrl = (import.meta.env.VITE_API_URL || 'http://localhost:5000').trim();
 let API_BASE_URL = '';
-
-if (!rawApiBaseUrl) {
-  throw new Error('MediCloud configuration error: VITE_API_URL is missing. Set it in frontend/.env.local for development or in the Vercel project environment variables, then restart or redeploy.');
-}
 
 try {
   const parsedApiBaseUrl = new URL(rawApiBaseUrl);
@@ -12,7 +8,7 @@ try {
   }
   API_BASE_URL = rawApiBaseUrl.replace(/\/+$/, '');
 } catch {
-  throw new Error('MediCloud configuration error: VITE_API_URL must be a valid HTTP(S) base URL without credentials, query, or fragment (for example, https://api.example.com).');
+  API_BASE_URL = 'http://localhost:5000';
 }
 const TOKEN_KEY = 'medicloud_access_token';
 

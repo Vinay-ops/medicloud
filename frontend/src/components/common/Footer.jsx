@@ -27,11 +27,11 @@ export const Footer = () => {
           {/* Brand Info */}
           <div className="lg:col-span-2 space-y-4">
             <Link to="/" className="flex items-center gap-2.5">
-              <div className="w-9 h-9 rounded-xl bg-teal-500 text-white flex items-center justify-center shadow-xs">
+              <div className="w-9 h-9 rounded-xl bg-[#0066FF] text-white flex items-center justify-center shadow-xs">
                 <Activity className="w-5 h-5" />
               </div>
               <span className="text-xl font-bold text-white tracking-tight">
-                Medi<span className="text-teal-400">Cloud</span>
+                Medi<span className="text-[#38bdf8]">Cloud</span>
               </span>
             </Link>
             <p className="text-sm text-slate-400 max-w-sm leading-relaxed">
@@ -45,22 +45,22 @@ export const Footer = () => {
             <h5 className="text-xs font-bold uppercase tracking-wider text-slate-200">Patient Services</h5>
             <ul className="space-y-2 text-sm text-slate-400">
               <li>
-                <Link to="/doctors" className="hover:text-teal-400 transition-colors">
+                <Link to="/doctors" className="hover:text-[#38bdf8] transition-colors">
                   Find Specialists
                 </Link>
               </li>
               <li>
-                <Link to="/patient/dashboard" className="hover:text-teal-400 transition-colors">
+                <Link to="/patient/dashboard" className="hover:text-[#38bdf8] transition-colors">
                   Patient Portal
                 </Link>
               </li>
               <li>
-                <Link to="/register" className="hover:text-teal-400 transition-colors">
+                <Link to="/register" className="hover:text-[#38bdf8] transition-colors">
                   Register Patient Account
                 </Link>
               </li>
               <li>
-                <a href="#how-it-works" className="hover:text-teal-400 transition-colors">
+                <a href="#how-it-works" className="hover:text-[#38bdf8] transition-colors">
                   How Booking Works
                 </a>
               </li>
@@ -72,17 +72,17 @@ export const Footer = () => {
             <h5 className="text-xs font-bold uppercase tracking-wider text-slate-200">For Clinicians</h5>
             <ul className="space-y-2 text-sm text-slate-400">
               <li>
-                <Link to="/doctor/dashboard" className="hover:text-teal-400 transition-colors">
+                <Link to="/doctor/dashboard" className="hover:text-[#38bdf8] transition-colors">
                   Doctor Schedule Portal
                 </Link>
               </li>
               <li>
-                <Link to="/admin/dashboard" className="hover:text-teal-400 transition-colors">
+                <Link to="/admin/dashboard" className="hover:text-[#38bdf8] transition-colors">
                   Clinical Administration
                 </Link>
               </li>
               <li>
-                <Link to="/login" className="hover:text-teal-400 transition-colors">
+                <Link to="/login" className="hover:text-[#38bdf8] transition-colors">
                   Provider Login
                 </Link>
               </li>

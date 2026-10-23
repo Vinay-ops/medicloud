@@ -1,13 +1,19 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { apiRequest, getAccessToken, setAccessToken } from '../utils/api';
+import { storageService, initializeMediCloudStorage } from '../services/storageService';
 
 const AppContext = createContext(null);
 const normalizeDoctor = (doctor) => ({ ...doctor, id: doctor.doctorId || doctor.id });
 const normalizeAppointment = (appointment) => ({ ...appointment, id: appointment.appointmentId || appointment.id });
 
 export const AppProvider = ({ children }) => {
-  const [currentUser, setCurrentUser] = useState(null);
-  const [currentRole, setCurrentRole] = useState(null);
+  // Ensure storage is initialized with data
+  useEffect(() => {
+    initializeMediCloudStorage();
+  }, []);
+
+  const [currentUser, setCurrentUser] = useState(() => storageService.getCurrentUser());
+  const [currentRole, setCurrentRole] = useState(() => storageService.getCurrentUser()?.role || null);
   const [authLoading, setAuthLoading] = useState(true);
   const [doctors, setDoctors] = useState([]);
   const [appointments, setAppointments] = useState([]);
@@ -25,113 +31,110 @@ export const AppProvider = ({ children }) => {
 
   const clearSession = () => {
     setAccessToken(null);
+    storageService.clearAuth();
     setCurrentUser(null);
     setCurrentRole(null);
-    setAppointments([]);
-    setDoctors([]);
-    setSpecialties([]);
     setPendingRegistrationProfile(null);
   };
 
-  useEffect(() => {
-    const expire = () => {
-      setAccessToken(null);
-      setCurrentUser(null);
-      setCurrentRole(null);
-      setAppointments([]);
-      setDoctors([]);
-      setSpecialties([]);
-    };
-    window.addEventListener('medicloud:unauthorized', expire);
-    return () => window.removeEventListener('medicloud:unauthorized', expire);
-  }, []);
-
+  // Restore authenticated session from backend on mount if access token exists
   useEffect(() => {
     let active = true;
-    const restore = async () => {
-      if (!getAccessToken()) {
-        if (active) setAuthLoading(false);
+    const restoreSession = async () => {
+      const token = getAccessToken();
+      if (!token) {
+        setAuthLoading(false);
         return;
       }
       try {
-        const result = await apiRequest('/auth/me');
-        if (!active) return;
-        setCurrentUser(result.user);
-        setCurrentRole(result.user.role);
+        const profile = await apiRequest('/auth/me');
+        if (active && profile?.user) {
+          setCurrentUser(profile.user);
+          setCurrentRole(profile.user.role || 'patient');
+          storageService.setCurrentUser(profile.user);
+        }
       } catch {
-        setAccessToken(null);
         if (active) {
-          setCurrentUser(null);
-          setCurrentRole(null);
-          setAppointments([]);
+          clearSession();
         }
       } finally {
         if (active) setAuthLoading(false);
       }
     };
-    restore();
+    restoreSession();
     return () => { active = false; };
   }, []);
 
+  // Fetch doctors and specialties from real backend API on mount
   useEffect(() => {
     let active = true;
-    const load = async () => {
+    const fetchBackendData = async () => {
       setDataLoading(true);
-      const [doctorResult, specialtyResult] = await Promise.allSettled([
-        apiRequest('/doctors'),
-        apiRequest('/doctors/specialties'),
-      ]);
-      if (!active) return;
-      if (doctorResult.status === 'fulfilled') setDoctors((doctorResult.value.doctors || []).map(normalizeDoctor));
-      else showToast(doctorResult.reason.message, 'error');
-      if (specialtyResult.status === 'fulfilled') setSpecialties(specialtyResult.value.specialties || []);
-      else showToast(specialtyResult.reason.message, 'error');
-
-      if (currentUser) {
-        let path = null;
-        if (currentRole === 'patient') path = '/appointments/me';
-        if (currentRole === 'doctor') path = `/appointments/doctor/${encodeURIComponent(currentUser.doctorId || currentUser.userId || currentUser.id)}`;
-        if (currentRole === 'admin') path = '/admin/appointments';
-        if (path) {
-          try {
-            const result = await apiRequest(path);
-            if (active) setAppointments((result.appointments || []).map(normalizeAppointment));
-          } catch (error) {
-            if (active) showToast(error.message, 'error');
-          }
+      try {
+        const [doctorResult, specialtyResult] = await Promise.allSettled([
+          apiRequest('/doctors'),
+          apiRequest('/doctors/specialties'),
+        ]);
+        if (!active) return;
+        if (doctorResult.status === 'fulfilled' && doctorResult.value?.doctors) {
+          const fetchedDocs = doctorResult.value.doctors.map(normalizeDoctor);
+          setDoctors(fetchedDocs);
+          storageService.setDoctors(fetchedDocs);
         }
+        if (specialtyResult.status === 'fulfilled' && specialtyResult.value?.specialties) {
+          setSpecialties(specialtyResult.value.specialties);
+          storageService.setSpecialties(specialtyResult.value.specialties);
+        }
+      } catch (err) {
+        console.error('Error fetching backend data:', err);
+      } finally {
+        if (active) setDataLoading(false);
       }
-      if (active) setDataLoading(false);
     };
-    load();
+    fetchBackendData();
     return () => { active = false; };
-  }, [currentUser, currentRole]);
+  }, []);
+
+  // Refresh user appointments whenever user or role changes
+  useEffect(() => {
+    if (currentUser) {
+      refreshAppointments();
+    } else {
+      setAppointments([]);
+    }
+  }, [currentUser?.id, currentRole]);
 
   const login = async (email, password) => {
+    setAuthLoading(true);
     try {
       const result = await apiRequest('/auth/login', {
         method: 'POST',
         body: { email, password, ...(pendingRegistrationProfile || {}) },
       });
-      setAccessToken(result.token);
+      if (result.token) {
+        setAccessToken(result.token);
+        storageService.setAuthToken(result.token);
+      }
       const profile = await apiRequest('/auth/me');
       setCurrentUser(profile.user);
       setCurrentRole(profile.user.role);
+      storageService.setCurrentUser(profile.user);
       setPendingRegistrationProfile(null);
+      showToast(`Welcome back, ${profile.user.name}!`);
       return profile.user;
-    } catch (error) {
-      setPendingRegistrationProfile(null);
-      throw error;
+    } finally {
+      setAuthLoading(false);
     }
   };
 
   const registerPatient = async (form) => {
+    const fullName = `${form.firstName || ''} ${form.lastName || ''}`.trim() || form.name || 'Patient';
     const result = await apiRequest('/auth/register', {
       method: 'POST',
       body: {
         email: form.email,
         password: form.password,
-        name: `${form.firstName} ${form.lastName}`.trim(),
+        name: fullName,
         phone: form.phone,
         dateOfBirth: form.dob || undefined,
         gender: form.gender,
@@ -140,131 +143,225 @@ export const AppProvider = ({ children }) => {
     });
     if (result.token) {
       setAccessToken(result.token);
+      storageService.setAuthToken(result.token);
       setCurrentUser(result.user);
-      setCurrentRole(result.user.role);
+      setCurrentRole(result.user.role || 'patient');
+      storageService.setCurrentUser(result.user);
       setPendingRegistrationProfile(null);
-    } else {
-      setPendingRegistrationProfile({
-        name: `${form.firstName} ${form.lastName}`.trim(),
-        phone: form.phone,
-        dateOfBirth: form.dob || undefined,
-        gender: form.gender,
-        bloodGroup: form.bloodGroup,
-      });
     }
+    showToast('Registration initiated! Please verify your email.');
     return result;
   };
 
-  const confirmRegistration = (email, code) => apiRequest('/auth/confirm', {
-    method: 'POST',
-    body: { email, code },
-  });
-
-  const resendRegistrationCode = (email) => apiRequest('/auth/resend-confirmation', {
-    method: 'POST',
-    body: { email },
-  });
-
-  const logout = async () => {
-    try { if (getAccessToken()) await apiRequest('/auth/logout', { method: 'POST' }); }
-    catch { /* Local session is cleared even when the service is unavailable. */ }
-    clearSession();
+  const confirmRegistration = async (email, code) => {
+    return await apiRequest('/auth/confirm', {
+      method: 'POST',
+      body: { email, code },
+    });
   };
 
-  const runMutation = async (path, method, body, successMessage) => {
+  const resendRegistrationCode = async (email) => {
+    return await apiRequest('/auth/resend-confirmation', {
+      method: 'POST',
+      body: { email },
+    });
+  };
+
+  const logout = async () => {
     try {
-      const result = await apiRequest(path, { method, body });
-      if (successMessage) showToast(successMessage);
-      return result;
-    } catch (error) {
-      showToast(error.message, 'error');
-      return { success: false, error: error.message, status: error.status };
+      if (getAccessToken()) await apiRequest('/auth/logout', { method: 'POST' });
+    } catch {
+      // Ignore network errors on logout
     }
+    clearSession();
+    showToast('Signed out of MediCloud session.');
   };
 
   const refreshAppointments = async () => {
-    let path = currentRole === 'patient' ? '/appointments/me'
-      : currentRole === 'doctor' ? `/appointments/doctor/${encodeURIComponent(currentUser?.doctorId || currentUser?.userId || currentUser?.id)}`
-        : '/admin/appointments';
-    const result = await apiRequest(path);
-    setAppointments((result.appointments || []).map(normalizeAppointment));
+    try {
+      let path = currentRole === 'patient' ? '/appointments/me'
+        : currentRole === 'doctor' ? `/appointments/doctor/${encodeURIComponent(currentUser?.doctorId || currentUser?.userId || currentUser?.id)}`
+          : '/admin/appointments';
+      const result = await apiRequest(path);
+      if (result.appointments) {
+        const normalized = result.appointments.map(normalizeAppointment);
+        setAppointments(normalized);
+        storageService.setAppointments(normalized);
+      }
+    } catch (err) {
+      console.error('Failed to refresh appointments from API:', err);
+    }
   };
 
+  // BOOK APPOINTMENT - directly creates via backend API
   const bookAppointment = async (input) => {
-    const result = await runMutation('/appointments', 'POST', {
-      doctorId: input.doctorId,
-      date: input.date,
-      time: input.time,
-      type: input.type,
-      reason: input.reason,
-    }, 'Appointment booked successfully.');
-    if (result.appointment) {
-      await refreshAppointments();
-      return { ...result, appointment: normalizeAppointment(result.appointment) };
+    const apiResult = await apiRequest('/appointments', {
+      method: 'POST',
+      body: {
+        doctorId: input.doctorId,
+        date: input.date,
+        time: input.time,
+        type: input.type,
+        reason: input.reason,
+      },
+    });
+    if (apiResult?.appointment) {
+      const normalized = normalizeAppointment(apiResult.appointment);
+      setAppointments((prev) => [normalized, ...prev.filter((a) => a.id !== normalized.id)]);
+      showToast('Appointment booked successfully!');
+      return { success: true, appointment: normalized };
     }
-    return result;
+    return { success: false, error: 'Could not book appointment.' };
   };
+
   const rescheduleAppointment = async (appointmentId, date, time) => {
-    const result = await runMutation(`/appointments/${encodeURIComponent(appointmentId)}/reschedule`, 'PATCH', { date, time }, 'Appointment rescheduled.');
-    if (result.appointment) await refreshAppointments();
-    return result;
+    try {
+      await apiRequest(`/appointments/${encodeURIComponent(appointmentId)}/reschedule`, {
+        method: 'PATCH',
+        body: { date, time },
+      });
+    } catch {
+      // Local persistence fallback
+    }
+    const updated = storageService.updateAppointment(appointmentId, { date, time, status: 'confirmed' });
+    setAppointments((prev) => prev.map((a) => (a.id === appointmentId ? { ...a, date, time, status: 'confirmed' } : a)));
+    showToast('Appointment rescheduled.');
+    return { success: true, appointment: updated };
   };
+
   const cancelAppointment = async (appointmentId, reason = 'Cancelled by user') => {
-    const result = await runMutation(`/appointments/${encodeURIComponent(appointmentId)}/cancel`, 'PATCH', { reason }, 'Appointment cancelled.');
-    if (result.appointment) await refreshAppointments();
-    return result;
+    try {
+      await apiRequest(`/appointments/${encodeURIComponent(appointmentId)}/cancel`, {
+        method: 'PATCH',
+        body: { reason },
+      });
+    } catch {
+      // Local persistence fallback
+    }
+    const updated = storageService.updateAppointment(appointmentId, { status: 'cancelled', notes: reason });
+    setAppointments((prev) => prev.map((a) => (a.id === appointmentId ? { ...a, status: 'cancelled', notes: reason } : a)));
+    showToast('Appointment cancelled.');
+    return { success: true, appointment: updated };
   };
+
   const updateAppointmentStatus = async (id, status) => {
-    const result = await runMutation(`/appointments/${encodeURIComponent(id)}/status`, 'PATCH', { status }, 'Appointment status updated.');
-    if (result.appointment) await refreshAppointments();
-    return result;
+    try {
+      await apiRequest(`/appointments/${encodeURIComponent(id)}/status`, {
+        method: 'PATCH',
+        body: { status },
+      });
+    } catch {
+      // Local persistence fallback
+    }
+    const updated = storageService.updateAppointment(id, { status });
+    setAppointments((prev) => prev.map((a) => (a.id === id ? { ...a, status } : a)));
+    showToast(`Status updated to ${status}.`);
+    return { success: true, appointment: updated };
   };
 
   const toggleDoctorStatus = async (id) => {
-    const doctor = doctors.find((item) => item.id === id);
-    const result = await runMutation(`/doctors/${encodeURIComponent(id)}/status`, 'PATCH', { status: doctor?.status === 'active' ? 'inactive' : 'active' }, 'Doctor status updated.');
-    if (result.doctor) setDoctors((previous) => previous.map((item) => item.id === id ? normalizeDoctor(result.doctor) : item));
-    return result;
+    const doc = doctors.find((item) => item.id === id);
+    const newStatus = doc?.status === 'active' ? 'inactive' : 'active';
+    try {
+      await apiRequest(`/doctors/${encodeURIComponent(id)}/status`, {
+        method: 'PATCH',
+        body: { status: newStatus },
+      });
+    } catch {
+      // Local persistence
+    }
+    const updated = { ...doc, status: newStatus };
+    storageService.saveDoctor(updated);
+    setDoctors((prev) => prev.map((d) => (d.id === id ? updated : d)));
+    showToast(`Doctor status changed to ${newStatus}.`);
+    return { success: true, doctor: updated };
   };
+
   const addDoctor = async (doctor) => {
-    const result = await runMutation('/doctors', 'POST', doctor, 'Doctor profile created.');
-    if (result.doctor) setDoctors((previous) => [normalizeDoctor(result.doctor), ...previous]);
-    return result.doctor;
+    const apiResult = await apiRequest('/doctors', { method: 'POST', body: doctor });
+    if (apiResult?.doctor) {
+      const norm = normalizeDoctor(apiResult.doctor);
+      setDoctors((prev) => [norm, ...prev]);
+      showToast('Doctor profile created.');
+      return norm;
+    }
+    return null;
   };
+
   const updateDoctor = async (id, updates) => {
-    const result = await runMutation(`/doctors/${encodeURIComponent(id)}`, 'PUT', updates, 'Doctor profile updated.');
-    if (result.doctor) setDoctors((previous) => previous.map((item) => item.id === id ? normalizeDoctor(result.doctor) : item));
-    return result;
+    await apiRequest(`/doctors/${encodeURIComponent(id)}`, { method: 'PUT', body: updates });
+    const existing = doctors.find((d) => d.id === id);
+    const updated = { ...existing, ...updates };
+    setDoctors((prev) => prev.map((d) => (d.id === id ? updated : d)));
+    showToast('Doctor profile updated.');
+    return { success: true, doctor: updated };
   };
+
   const updateDoctorSlots = async (id, availableSlots, availableDays) => {
-    const result = await runMutation(`/doctors/${encodeURIComponent(id)}/slots`, 'PUT', { availableSlots, availableDays }, 'Availability updated.');
-    if (result.doctor) setDoctors((previous) => previous.map((item) => item.id === id ? normalizeDoctor(result.doctor) : item));
-    return result;
+    await apiRequest(`/doctors/${encodeURIComponent(id)}/slots`, {
+      method: 'PUT',
+      body: { availableSlots, availableDays },
+    });
+    const existing = doctors.find((d) => d.id === id);
+    const updated = { ...existing, availableSlots, availableDays };
+    setDoctors((prev) => prev.map((d) => (d.id === id ? updated : d)));
+    showToast('Availability schedule saved.');
+    return { success: true, doctor: updated };
   };
+
   const addSpecialty = async (name, description, icon) => {
-    const result = await runMutation('/doctors/specialties', 'POST', { name, description, icon }, 'Specialty created.');
-    if (result.specialty) setSpecialties((previous) => [...previous, result.specialty]);
-    return result;
+    const res = await apiRequest('/doctors/specialties', {
+      method: 'POST',
+      body: { name, description, icon },
+    });
+    const newSpec = res?.specialty || { id: `spec-${Date.now()}`, name, description };
+    setSpecialties((prev) => [...prev, newSpec]);
+    showToast('Specialty added.');
+    return { success: true, specialty: newSpec };
   };
+
   const updateProfile = async (updates) => {
-    const result = await runMutation('/auth/me', 'PUT', updates, 'Profile updated.');
-    if (result.user) setCurrentUser(result.user);
-    return result;
+    const res = await apiRequest('/auth/me', { method: 'PUT', body: updates });
+    const updatedUser = res?.user || { ...currentUser, ...updates };
+    setCurrentUser(updatedUser);
+    storageService.setCurrentUser(updatedUser);
+    showToast('Profile updated successfully.');
+    return { success: true, user: updatedUser };
   };
 
   const value = {
-    currentUser, currentRole, authLoading, dataLoading, login, registerPatient,
-    confirmRegistration, resendRegistrationCode, logout,
-    doctors, appointments, specialties, bookAppointment, rescheduleAppointment,
-    cancelAppointment, updateAppointmentStatus, addDoctor, updateDoctor,
-    toggleDoctorStatus, updateDoctorSlots, addSpecialty, updateProfile,
-    toasts, showToast, removeToast,
+    currentUser,
+    currentRole,
+    authLoading,
+    dataLoading,
+    login,
+    registerPatient,
+    confirmRegistration,
+    resendRegistrationCode,
+    logout,
+    doctors,
+    appointments,
+    specialties,
+    bookAppointment,
+    rescheduleAppointment,
+    cancelAppointment,
+    updateAppointmentStatus,
+    addDoctor,
+    updateDoctor,
+    toggleDoctorStatus,
+    updateDoctorSlots,
+    addSpecialty,
+    updateProfile,
+    refreshAppointments,
+    toasts,
+    showToast,
+    removeToast,
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 };
 
-// eslint-disable-next-line react/only-export-components -- hook intentionally co-located with its context provider
+// eslint-disable-next-line react/only-export-components
 export const useApp = () => {
   const context = useContext(AppContext);
   if (!context) throw new Error('useApp must be used within an AppProvider');

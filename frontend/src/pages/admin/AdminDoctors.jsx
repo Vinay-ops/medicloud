@@ -155,7 +155,7 @@ export const AdminDoctors = () => {
           onClick={() => setActiveTab('doctors')}
           className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
             activeTab === 'doctors'
-              ? 'bg-teal-600 text-white shadow-xs'
+              ? 'bg-[#0066FF] text-white shadow-xs'
               : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
           }`}
         >
@@ -168,7 +168,7 @@ export const AdminDoctors = () => {
           onClick={() => setActiveTab('specialties')}
           className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
             activeTab === 'specialties'
-              ? 'bg-teal-600 text-white shadow-xs'
+              ? 'bg-[#0066FF] text-white shadow-xs'
               : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
           }`}
         >
@@ -189,7 +189,7 @@ export const AdminDoctors = () => {
                 placeholder="Search doctors by name or hospital..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-9 pr-3.5 py-2 rounded-xl border border-slate-200 text-xs bg-slate-50/50 text-slate-900 focus:bg-white focus:border-teal-600 focus:ring-2 focus:ring-teal-500/15 outline-none"
+                className="w-full pl-9 pr-3.5 py-2 rounded-xl border border-slate-200 text-xs bg-slate-50/50 text-slate-900 focus:bg-white focus:border-[#0066FF] focus:ring-2 focus:ring-[#0066FF]/15 outline-none"
               />
             </div>
 
@@ -237,7 +237,7 @@ export const AdminDoctors = () => {
                         <tr key={doc.id} className="hover:bg-slate-50/80 transition-colors">
                           <td className="py-3.5 px-4">
                             <div className="flex items-center gap-3">
-                              <div className="w-9 h-9 rounded-xl bg-teal-50 text-teal-800 grid place-items-center font-bold" aria-hidden="true">{doc.name?.slice(0, 1)?.toUpperCase() || '?'}</div>
+                              <div className="w-9 h-9 rounded-xl bg-blue-50 text-[#0066FF] grid place-items-center font-bold" aria-hidden="true">{doc.name?.slice(0, 1)?.toUpperCase() || '?'}</div>
                               <div>
                                 <div className="font-bold text-slate-900">{doc.name}</div>
                                 <div className="text-2xs text-slate-400">{doc.title}</div>
@@ -245,7 +245,7 @@ export const AdminDoctors = () => {
                             </div>
                           </td>
                           <td className="py-3.5 px-4">
-                            <div className="font-semibold text-teal-700">{doc.specialty}</div>
+                            <div className="font-semibold text-[#0066FF]">{doc.specialty}</div>
                             <div className="text-2xs text-slate-500">{doc.hospital}</div>
                           </td>
                           <td className="py-3.5 px-4 font-bold text-slate-900">
@@ -273,7 +273,7 @@ export const AdminDoctors = () => {
                                 className={`text-2xs font-bold px-2.5 py-1 rounded-md border transition-colors cursor-pointer ${
                                   isActive
                                     ? 'border-rose-200 bg-rose-50 text-rose-700 hover:bg-rose-100'
-                                    : 'border-teal-200 bg-teal-50 text-teal-700 hover:bg-teal-100'
+                                    : 'border-blue-200 bg-blue-50 text-[#0066FF] hover:bg-blue-100'
                                 }`}
                               >
                                 {isActive ? 'Deactivate' : 'Activate'}
@@ -299,7 +299,7 @@ export const AdminDoctors = () => {
               key={spec.id}
               className="bg-white rounded-2xl p-5 border border-slate-200/90 shadow-xs hover:border-slate-300 transition-all space-y-3"
             >
-              <div className="w-10 h-10 rounded-xl bg-teal-50 text-teal-600 flex items-center justify-center font-bold">
+              <div className="w-10 h-10 rounded-xl bg-blue-50 text-[#0066FF] flex items-center justify-center font-bold">
                 <Sparkles className="w-5 h-5" />
               </div>
               <div>
@@ -308,7 +308,7 @@ export const AdminDoctors = () => {
               </div>
               <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-2xs text-slate-400 font-semibold">
                 <span>SPECIALTY</span>
-                <span className="text-teal-700 font-bold">
+                <span className="text-[#0066FF] font-bold">
                   {doctors.filter((d) => d.specialty.toLowerCase() === spec.name.toLowerCase()).length} Doctors
                 </span>
               </div>
@@ -356,7 +356,7 @@ export const AdminDoctors = () => {
                 required
               />
               <Input
-                label="Consultation Fee ($)"
+                label="Consultation Fee (₹)"
                 type="number"
                 value={doctorForm.fee}
                 onChange={(e) => setDoctorForm({ ...doctorForm, fee: e.target.value })}
@@ -403,7 +403,7 @@ export const AdminDoctors = () => {
                 value={doctorForm.bio}
                 onChange={(e) => setDoctorForm({ ...doctorForm, bio: e.target.value })}
                 rows={2}
-                className="w-full bg-white text-slate-900 text-xs rounded-lg border border-slate-300 p-2.5 focus:border-teal-600 outline-none"
+                className="w-full bg-white text-slate-900 text-xs rounded-lg border border-slate-300 p-2.5 focus:border-[#0066FF] outline-none"
                 placeholder="Brief clinical background and specialty focus..."
               />
             </div>

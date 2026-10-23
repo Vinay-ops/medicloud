@@ -1,11 +1,15 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import {
   Calendar,
   Clock,
   CheckCircle,
   Users,
-  Settings
+  Settings,
+  TrendingUp,
+  Activity,
+  ChevronRight,
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { StatsCard } from '../../components/common/StatsCard';
@@ -40,6 +44,7 @@ export const DoctorDashboard = () => {
   );
 
   const pendingAppointments = myAppointments.filter((apt) => apt.status === 'pending');
+  const completedCount = myAppointments.filter((apt) => apt.status === 'completed').length;
 
   const handleAccept = (appointmentId) => {
     updateAppointmentStatus(appointmentId, 'confirmed');
@@ -54,72 +59,87 @@ export const DoctorDashboard = () => {
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 max-w-7xl mx-auto pb-12">
       {/* Doctor Header Banner */}
-      <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/90 shadow-xs flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-        <div className="flex items-center gap-4 sm:gap-5">
-          <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl border-2 border-teal-500 bg-teal-50 text-teal-800 text-xl font-bold grid place-items-center" aria-hidden="true">{currentUser?.name?.slice(0, 1) || '?'}</div>
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="text-2xs font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-teal-50 text-teal-800 border border-teal-200">
-                Attending Physician
-              </span>
-              {doctorProfile?.licenseNumber && <span className="text-2xs text-slate-400">License: {doctorProfile.licenseNumber}</span>}
+      <motion.div
+        initial={{ opacity: 0, y: 15 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="relative overflow-hidden bg-gradient-to-r from-[#0066FF] via-[#0052CC] to-[#06B6D4] rounded-3xl p-6 sm:p-8 text-white shadow-lg"
+      >
+        <div className="absolute top-0 right-0 -mt-12 -mr-12 w-64 h-64 bg-white/10 rounded-full blur-2xl pointer-events-none" />
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div className="flex items-center gap-4 sm:gap-5">
+            <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-white/20 backdrop-blur-md border-2 border-white/30 text-white text-2xl font-black grid place-items-center shadow-md" aria-hidden="true">
+              {currentUser?.name?.slice(0, 1) || '?'}
             </div>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight mt-1">
-              {currentUser?.name || 'Doctor'}
-            </h2>
-            <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
-              {[doctorProfile?.title, doctorProfile?.specialty, doctorProfile?.hospital].filter(Boolean).join(' • ') || 'Doctor profile details are not available.'}
-            </p>
+            <div>
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded-full bg-white/20 text-white border border-white/20 backdrop-blur-xs">
+                  Attending Physician
+                </span>
+                {doctorProfile?.licenseNumber && (
+                  <span className="text-xs text-blue-100">License: {doctorProfile.licenseNumber}</span>
+                )}
+              </div>
+              <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight mt-1">
+                {currentUser?.name || 'Doctor'}
+              </h1>
+              <p className="text-xs sm:text-sm text-blue-100 mt-0.5">
+                {[doctorProfile?.title, doctorProfile?.specialty, doctorProfile?.hospital].filter(Boolean).join(' • ') || 'Doctor profile details are not available.'}
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <Button
+              variant="secondary"
+              leftIcon={Settings}
+              onClick={() => navigate('/doctor/schedule')}
+              className="bg-white/15 hover:bg-white/25 text-white border-white/30 font-bold backdrop-blur-sm"
+            >
+              Manage Slots
+            </Button>
+            <Button
+              variant="secondary"
+              leftIcon={Calendar}
+              onClick={() => navigate('/doctor/schedule')}
+              className="bg-white hover:bg-slate-50 text-[#0066FF] font-bold border-none shadow-md"
+            >
+              Schedule
+            </Button>
           </div>
         </div>
-
-        <div className="flex items-center gap-3">
-          <Button
-            variant="secondary"
-            leftIcon={Settings}
-            onClick={() => navigate('/doctor/schedule')}
-          >
-            Manage Slots
-          </Button>
-          <Button
-            variant="primary"
-            leftIcon={Calendar}
-            onClick={() => navigate('/doctor/schedule')}
-          >
-            Schedule Overview
-          </Button>
-        </div>
-      </div>
+      </motion.div>
 
       {/* Doctor KPI Metrics */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatsCard
-          title="Today's Consultations"
+          title="Today's Patients"
           value={todayAppointments.length}
-          subtitle="Patients in today's clinic queue"
+          subtitle="In today's clinic queue"
           icon={Users}
         />
         <StatsCard
           title="Pending Approval"
           value={pendingAppointments.length}
-          subtitle="Awaiting doctor confirmation"
+          subtitle="Awaiting confirmation"
           icon={Clock}
           trend={pendingAppointments.length > 0 ? `${pendingAppointments.length} action required` : 'No pending items'}
           trendPositive={null}
         />
         <StatsCard
-          title="Upcoming Schedule"
+          title="Upcoming Visits"
           value={upcomingAppointments.length}
-          subtitle="Confirmed future visits"
+          subtitle="Confirmed future consults"
           icon={Calendar}
         />
         <StatsCard
-          title="Patient Records"
-          value={new Set(myAppointments.map((appointment) => appointment.patientId)).size}
-          subtitle="Patients with appointments"
-          icon={Users}
+          title="Completed"
+          value={completedCount}
+          subtitle="Total consultations done"
+          icon={CheckCircle}
+          trend="All time"
+          trendPositive={true}
         />
       </div>
 
@@ -127,13 +147,15 @@ export const DoctorDashboard = () => {
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="text-lg font-bold text-slate-900 tracking-tight flex items-center gap-2">
-              <span>Today's Appointments Queue</span>
-              <span className="px-2 py-0.5 rounded-full text-2xs font-bold bg-teal-100 text-teal-800">
+            <h2 className="text-lg font-extrabold text-[#1E293B] tracking-tight flex items-center gap-2">
+              <span>Today's Appointment Queue</span>
+              <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-[#0066FF] text-white">
                 {todayAppointments.length}
               </span>
-            </h3>
-            <p className="text-xs text-slate-500">Scheduled consultations for today ({formatDate(actualToday)})</p>
+            </h2>
+            <p className="text-xs text-slate-500 mt-0.5">
+              Scheduled consultations for today ({formatDate(actualToday)})
+            </p>
           </div>
         </div>
 
@@ -164,13 +186,19 @@ export const DoctorDashboard = () => {
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="text-lg font-bold text-slate-900 tracking-tight">Upcoming Consultations & Requests</h3>
-            <p className="text-xs text-slate-500">Future bookings requiring your preparation or approval</p>
+            <h2 className="text-lg font-extrabold text-[#1E293B] tracking-tight">
+              Upcoming Consultations & Requests
+            </h2>
+            <p className="text-xs text-slate-500 mt-0.5">
+              Future bookings requiring your preparation or approval
+            </p>
           </div>
           <Button
             variant="ghost"
             size="sm"
+            rightIcon={ChevronRight}
             onClick={() => navigate('/doctor/schedule')}
+            className="text-[#0066FF] hover:bg-blue-50"
           >
             Full Calendar
           </Button>
@@ -211,11 +239,11 @@ export const DoctorDashboard = () => {
           <div className="space-y-5">
             <div className="grid grid-cols-2 gap-3 text-xs">
               <div className="p-3 bg-slate-50 rounded-xl border border-slate-100">
-                <span className="text-slate-400 block font-semibold text-2xs uppercase">Patient demographics</span>
+                <span className="text-slate-400 block font-semibold text-[10px] uppercase tracking-wider">Patient Demographics</span>
                 <span className="font-bold text-slate-800 mt-0.5 block">{selectedPatientApt.patientGender || 'Not provided'}</span>
               </div>
               <div className="p-3 bg-slate-50 rounded-xl border border-slate-100">
-                <span className="text-slate-400 block font-semibold text-2xs uppercase">Contact Phone</span>
+                <span className="text-slate-400 block font-semibold text-[10px] uppercase tracking-wider">Contact Phone</span>
                 <span className="font-bold text-slate-800 mt-0.5 block">{selectedPatientApt.patientPhone || 'Not provided'}</span>
               </div>
             </div>
