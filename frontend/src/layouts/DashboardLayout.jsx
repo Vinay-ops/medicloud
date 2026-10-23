@@ -135,11 +135,11 @@ export const DashboardLayout = () => {
 
       {/* Main Container */}
       <div className="flex-1 flex max-w-screen-2xl w-full mx-auto">
-        {/* Desktop Collapsing Sidebar */}
+        {/* Desktop Collapsing Sidebar - fixed/sticky in viewport without scrolling */}
         <motion.aside
           animate={{ width: isCollapsed ? 76 : 240 }}
           transition={{ duration: 0.2, ease: 'easeInOut' }}
-          className="hidden lg:flex flex-col justify-between bg-white border-r border-[#E2E8F0] py-5 px-3 shrink-0 shadow-xs"
+          className="hidden lg:flex flex-col justify-between bg-white border-r border-[#E2E8F0] py-5 px-3 shrink-0 shadow-xs sticky top-[68px] h-[calc(100vh-68px)] overflow-hidden select-none"
         >
           <div className="space-y-5">
             <div className="flex items-center justify-between px-2">

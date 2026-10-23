@@ -26,8 +26,6 @@ export const Navbar = () => {
 
   return (
     <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200/80 transition-all">
-      {import.meta.env.VITE_APP_ENV !== 'production' && <div className="bg-amber-50 text-amber-900 text-2xs py-1 px-4 text-center">Local development environment. Backend provider mode is configured on the server.</div>}
-
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-18">
           {/* Logo */}
