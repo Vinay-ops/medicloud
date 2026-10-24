@@ -95,14 +95,6 @@ export const PatientDashboard = () => {
               {currentUser?.name?.slice(0, 1) || 'P'}
             </div>
             <div>
-              <div className="flex items-center gap-2">
-                <span className="px-2.5 py-0.5 rounded-full text-2xs font-extrabold uppercase tracking-wider bg-white/20 text-white backdrop-blur-xs border border-white/20">
-                  {currentUser?.role === 'patient' ? 'Verified Patient' : `${currentUser?.role} Account`}
-                </span>
-                <span className="text-2xs text-blue-100 font-medium">
-                  ID: {currentUser?.id || 'MC-8491'}
-                </span>
-              </div>
               <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight mt-1">
                 Good day, {currentUser?.name || 'Valued Patient'}! 👋
               </h1>

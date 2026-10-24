@@ -82,12 +82,6 @@ export const PatientProfile = () => {
             {currentUser?.name?.slice(0, 1) || 'P'}
           </div>
           <div>
-            <div className="flex items-center gap-2">
-              <span className="px-3 py-1 rounded-full text-2xs font-extrabold uppercase tracking-wider bg-blue-50 text-[#0066FF] border border-blue-200">
-                {currentUser?.role || 'Patient'} Account
-              </span>
-              <span className="text-2xs text-slate-400">ID: {currentUser?.id || 'MC-8491'}</span>
-            </div>
             <h1 className="text-2xl sm:text-3xl font-black text-[#1E293B] tracking-tight mt-1">
               {currentUser?.name || 'Patient Profile'}
             </h1>
