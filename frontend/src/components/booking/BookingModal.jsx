@@ -6,16 +6,14 @@ import { Button } from '../common/Button';
 import { Input } from '../common/Input';
 import { useApp } from '../../context/AppContext';
 import { formatCurrency, formatDate } from '../../utils/formatters';
+import { getDateDayName, getNextAvailableDate, isAvailableDate } from '../../utils/appointmentAvailability';
 
-const dateAtMidnight = new Date();
-const MIN_BOOKING_DATE = new Date(dateAtMidnight.getTime() - dateAtMidnight.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
-dateAtMidnight.setDate(dateAtMidnight.getDate() + 1);
-const DEFAULT_BOOKING_DATE = new Date(dateAtMidnight.getTime() - dateAtMidnight.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+const MIN_BOOKING_DATE = new Date().toISOString().slice(0, 10);
 
 export const BookingModal = ({ isOpen, onClose, doctor, initialDate, initialSlot }) => {
   const { bookAppointment, appointments, currentUser } = useApp();
 
-  const [date, setDate] = useState(initialDate || DEFAULT_BOOKING_DATE);
+  const [date, setDate] = useState(initialDate || getNextAvailableDate(doctor?.availableDays || []));
   const [selectedSlot, setSelectedSlot] = useState(initialSlot || doctor?.availableSlots?.[0] || '10:00 AM');
   const [type, setType] = useState('In-Person Consultation');
   const [reason, setReason] = useState('');
@@ -41,6 +39,11 @@ export const BookingModal = ({ isOpen, onClose, doctor, initialDate, initialSlot
   const handleDateChange = (newDate) => {
     setDate(newDate);
     setSlotError('');
+    if (!isAvailableDate(newDate, doctor.availableDays || [])) {
+      setSlotError(`${doctor.name} is not available on ${getDateDayName(newDate)}. Available days: ${(doctor.availableDays || []).join(', ')}.`);
+      setSelectedSlot('');
+      return;
+    }
     const firstUnbooked = doctor.availableSlots?.find((slot) => !isSlotBooked(slot, newDate));
     setSelectedSlot(firstUnbooked || doctor.availableSlots?.[0] || '');
   };
@@ -51,6 +54,10 @@ export const BookingModal = ({ isOpen, onClose, doctor, initialDate, initialSlot
 
     if (!date) {
       setSlotError('Please choose an appointment date.');
+      return;
+    }
+    if (!isAvailableDate(date, doctor.availableDays || [])) {
+      setSlotError(`${doctor.name} is not available on ${getDateDayName(date)}. Available days: ${(doctor.availableDays || []).join(', ')}.`);
       return;
     }
     if (!selectedSlot) {
@@ -78,6 +85,8 @@ export const BookingModal = ({ isOpen, onClose, doctor, initialDate, initialSlot
       } else {
         setSlotError(result.error || 'The appointment could not be booked.');
       }
+    } catch (error) {
+      setSlotError(error?.message || 'The appointment could not be booked.');
     } finally {
       setIsSubmitting(false);
     }
@@ -191,6 +200,10 @@ export const BookingModal = ({ isOpen, onClose, doctor, initialDate, initialSlot
               required
               className="w-full bg-white text-slate-900 text-sm rounded-xl border border-slate-300 py-2.5 px-3.5 focus:border-[#0066FF] focus:ring-2 focus:ring-[#0066FF]/15 outline-none cursor-pointer"
             />
+            <p className="text-2xs text-slate-500 mt-1.5">
+              Available days: {(doctor.availableDays || ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']).join(', ')}
+            </p>
+            {slotError && <p className="text-xs text-rose-600 mt-2">{slotError}</p>}
           </div>
 
           {/* Time Slots Selection */}
@@ -265,14 +278,14 @@ export const BookingModal = ({ isOpen, onClose, doctor, initialDate, initialSlot
 
               <button
                 type="button"
-                onClick={() => setType('Video Telehealth')}
+                onClick={() => setType('Video Consultation')}
                 className={`flex items-center gap-3 p-3.5 rounded-2xl border text-left transition-all cursor-pointer ${
-                  type === 'Video Telehealth'
+                  type === 'Video Consultation'
                     ? 'border-[#0066FF] bg-blue-50/50 text-[#0066FF] ring-2 ring-[#0066FF]/20 font-bold'
                     : 'border-slate-200 hover:bg-slate-50 text-slate-700'
                 }`}
               >
-                <Video className={`w-5 h-5 ${type === 'Video Telehealth' ? 'text-[#0066FF]' : 'text-slate-400'}`} />
+                <Video className={`w-5 h-5 ${type === 'Video Consultation' ? 'text-[#0066FF]' : 'text-slate-400'}`} />
                 <div>
                   <span className="text-xs font-bold block">Video Telehealth</span>
                   <span className="text-2xs text-slate-500 font-normal">Encrypted digital consult</span>

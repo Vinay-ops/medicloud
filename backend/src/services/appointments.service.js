@@ -69,8 +69,8 @@ export async function createAppointment(input, patientUser) {
 
   // 3. Validate the date falls on one of the doctor's working days
   const [year, month, day] = date.split('-').map(Number);
-  const dateObj = new Date(year, month - 1, day);
-  const dayName = DAY_NAMES[dateObj.getDay()];
+  const dateObj = new Date(Date.UTC(year, month - 1, day));
+  const dayName = DAY_NAMES[dateObj.getUTCDay()];
 
   if (doctor.availableDays && doctor.availableDays.length > 0) {
     if (!doctor.availableDays.includes(dayName)) {
@@ -78,7 +78,7 @@ export async function createAppointment(input, patientUser) {
         success: false,
         status: 400,
         error: 'DOCTOR_NOT_AVAILABLE_ON_DAY',
-        message: `Dr. ${doctor.name} does not work on ${dayName}s. Available days: ${doctor.availableDays.join(', ')}.`,
+        message: `${doctor.name} does not work on ${dayName}s. Available days: ${doctor.availableDays.join(', ')}.`,
       };
     }
   }
@@ -220,11 +220,11 @@ export async function rescheduleAppointment(appointmentId, input, userId, userRo
   }
   if (doctor.availableDays && doctor.availableDays.length > 0) {
     const [year, month, day] = date.split('-').map(Number);
-    const dayName = DAY_NAMES[new Date(year, month - 1, day).getDay()];
+    const dayName = DAY_NAMES[new Date(Date.UTC(year, month - 1, day)).getUTCDay()];
     if (!doctor.availableDays.includes(dayName)) {
       return {
         success: false, status: 400, error: 'DOCTOR_NOT_AVAILABLE_ON_DAY',
-        message: `Dr. ${doctor.name} does not work on ${dayName}s.`,
+        message: `${doctor.name} does not work on ${dayName}s.`,
       };
     }
   }

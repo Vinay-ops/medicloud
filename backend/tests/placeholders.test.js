@@ -355,6 +355,23 @@ describe('Appointments Routes', () => {
     assert.equal(res.body.error.code, 'VALIDATION_ERROR');
   });
 
+  it('PATCH appointment status — rejects patient attempts without weakening role checks', async () => {
+    const { token } = await registerAndLogin('.status-patient');
+    const booking = await request(app)
+      .post('/api/appointments')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ doctorId: 'doc-1', date: '2028-01-10', time: '09:00 AM', reason: 'Status authorization test' })
+      .expect(201);
+
+    const response = await request(app)
+      .patch(`/api/appointments/${booking.body.appointment.appointmentId}/status`)
+      .set('Authorization', `Bearer ${token}`)
+      .send({ status: 'completed' })
+      .expect(403);
+
+    assert.equal(response.body.error.code, 'FORBIDDEN');
+  });
+
   it('PATCH appointment routes enforce owner access and support cancellation and rescheduling', async () => {
     const { token: ownerToken } = await registerAndLogin('.owner');
     const { token: otherToken } = await registerAndLogin('.other');

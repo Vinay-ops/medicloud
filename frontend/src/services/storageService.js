@@ -94,6 +94,7 @@ export const storageService = {
 
   // Specialties
   getSpecialties: () => getStorageItem(STORAGE_KEYS.SPECIALTIES, []),
+  setSpecialties: (specialties) => setStorageItem(STORAGE_KEYS.SPECIALTIES, specialties || []),
   addSpecialty: (specialty) => {
     const list = getStorageItem(STORAGE_KEYS.SPECIALTIES, []);
     const updated = [...list, specialty];

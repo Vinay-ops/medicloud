@@ -54,8 +54,8 @@ export const DoctorDashboard = () => {
     updateAppointmentStatus(appointmentId, 'rejected');
   };
 
-  const handleComplete = (appointmentId) => {
-    updateAppointmentStatus(appointmentId, 'completed');
+  const handleComplete = async (appointmentId) => {
+    await updateAppointmentStatus(appointmentId, 'completed');
   };
 
   return (

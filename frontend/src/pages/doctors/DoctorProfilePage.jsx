@@ -25,21 +25,18 @@ import { BookingModal } from '../../components/booking/BookingModal';
 import { Button } from '../../components/common/Button';
 import { Badge } from '../../components/common/Badge';
 import { formatCurrency, formatDate } from '../../utils/formatters';
-
-const dateTomorrow = new Date();
-dateTomorrow.setDate(dateTomorrow.getDate() + 1);
-const DEFAULT_WIZARD_DATE = new Date(dateTomorrow.getTime() - dateTomorrow.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+import { getDateDayName, getNextAvailableDate, isAvailableDate } from '../../utils/appointmentAvailability';
 
 export const DoctorProfilePage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { doctors, appointments, bookAppointment } = useApp();
+  const { doctors, appointments, bookAppointment, showToast } = useApp();
 
   const doctor = doctors.find((d) => d.id === id || d.doctorId === id) || doctors[0];
 
   // Wizard state inside profile
   const [wizardStep, setWizardStep] = useState(1); // 1: Date & Time, 2: Consultation Type & Symptoms, 3: Review & Confirm
-  const [selectedDate, setSelectedDate] = useState(DEFAULT_WIZARD_DATE);
+  const [selectedDate, setSelectedDate] = useState(() => getNextAvailableDate(doctor?.availableDays || []));
   const [selectedSlot, setSelectedSlot] = useState(doctor?.availableSlots?.[0] || '10:00 AM');
   const [consultType, setConsultType] = useState('In-Person Consultation');
   const [symptoms, setSymptoms] = useState('');
@@ -69,6 +66,7 @@ export const DoctorProfilePage = () => {
   };
 
   const handleConfirmScheduleWizard = async () => {
+    if (!isAvailableDate(selectedDate, doctor.availableDays || [])) return;
     setIsBooking(true);
     try {
       const fullReason = [reason, symptoms ? `Symptoms: ${symptoms}` : ''].filter(Boolean).join(' • ');
@@ -82,7 +80,13 @@ export const DoctorProfilePage = () => {
       if (res.success && res.appointment) {
         setBookingSuccess(res.appointment);
         setWizardStep(4); // Success step
+      } else {
+        showToast(res.error || 'The appointment could not be booked.', 'error');
+        setWizardStep(1);
       }
+    } catch (error) {
+      showToast(error?.message || 'The appointment could not be booked.', 'error');
+      setWizardStep(1);
     } finally {
       setIsBooking(false);
     }
@@ -294,10 +298,18 @@ export const DoctorProfilePage = () => {
                       <input
                         type="date"
                         value={selectedDate}
-                        min={DEFAULT_WIZARD_DATE}
+                        min={new Date().toISOString().slice(0, 10)}
                         onChange={(e) => setSelectedDate(e.target.value)}
                         className="w-full bg-slate-50 text-slate-900 text-sm rounded-xl border border-slate-300 py-2.5 px-3.5 focus:bg-white focus:border-[#0066FF] outline-none cursor-pointer"
                       />
+                      <p className="text-2xs text-slate-500 mt-1.5">
+                        Available days: {(doctor.availableDays || ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']).join(', ')}
+                      </p>
+                      {!isAvailableDate(selectedDate, doctor.availableDays || []) && (
+                        <p className="text-xs text-rose-600 mt-2">
+                          {doctor.name} is not available on {getDateDayName(selectedDate)}. Please choose an available day.
+                        </p>
+                      )}
                     </div>
 
                     <div>
@@ -334,7 +346,10 @@ export const DoctorProfilePage = () => {
                       <Button
                         variant="primary"
                         className="w-full justify-center bg-[#0066FF] hover:bg-[#0052CC] py-3 rounded-xl font-bold shadow-md"
-                        onClick={() => setWizardStep(2)}
+                        onClick={() => {
+                          if (isAvailableDate(selectedDate, doctor.availableDays || [])) setWizardStep(2);
+                        }}
+                        disabled={!isAvailableDate(selectedDate, doctor.availableDays || [])}
                       >
                         Continue to Visit Details
                       </Button>
@@ -370,9 +385,9 @@ export const DoctorProfilePage = () => {
                         </button>
                         <button
                           type="button"
-                          onClick={() => setConsultType('Video Telehealth')}
+                          onClick={() => setConsultType('Video Consultation')}
                           className={`p-3 rounded-xl border text-left transition-all ${
-                            consultType === 'Video Telehealth'
+                            consultType === 'Video Consultation'
                               ? 'border-[#0066FF] bg-blue-50/50 text-[#0066FF] ring-2 ring-[#0066FF]/20 font-bold'
                               : 'border-slate-200 hover:bg-slate-50 text-slate-700'
                           }`}

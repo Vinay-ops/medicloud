@@ -26,7 +26,7 @@ import { formatDate, formatCurrency } from '../../utils/formatters';
 
 export const PatientAppointments = () => {
   const navigate = useNavigate();
-  const { currentUser, appointments, cancelAppointment, updateAppointmentStatus } = useApp();
+  const { currentUser, appointments, cancelAppointment } = useApp();
 
   const [activeTab, setActiveTab] = useState('upcoming'); // 'upcoming', 'completed', 'cancelled', 'all'
   const [searchTerm, setSearchTerm] = useState('');
@@ -72,10 +72,6 @@ export const PatientAppointments = () => {
       cancelAppointment(cancelingApt.id, 'Cancelled by patient via portal');
       setCancelingApt(null);
     }
-  };
-
-  const handleMarkCompleted = (id) => {
-    updateAppointmentStatus(id, 'completed');
   };
 
   return (
@@ -262,15 +258,6 @@ export const PatientAppointments = () => {
                         className="text-xs text-rose-600 hover:bg-rose-50 rounded-xl"
                       >
                         Cancel
-                      </Button>
-                      <Button
-                        variant="primary"
-                        size="sm"
-                        leftIcon={Check}
-                        onClick={() => handleMarkCompleted(apt.id)}
-                        className="text-xs bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl"
-                      >
-                        Completed
                       </Button>
                     </div>
                   )}

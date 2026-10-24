@@ -246,17 +246,26 @@ export const AppProvider = ({ children }) => {
 
   const updateAppointmentStatus = async (id, status) => {
     try {
-      await apiRequest(`/appointments/${encodeURIComponent(id)}/status`, {
+      const result = await apiRequest(`/appointments/${encodeURIComponent(id)}/status`, {
         method: 'PATCH',
         body: { status },
       });
-    } catch {
-      // Local persistence fallback
+      if (!result?.appointment) {
+        throw new Error('The server did not return the updated appointment.');
+      }
+
+      const updated = normalizeAppointment(result.appointment);
+      setAppointments((prev) => prev.map((appointment) => (
+        appointment.id === updated.id ? updated : appointment
+      )));
+      storageService.updateAppointment(updated.id, updated);
+      showToast(`Status updated to ${updated.status}.`);
+      return { success: true, appointment: updated };
+    } catch (error) {
+      const message = error?.message || 'The appointment status could not be updated.';
+      showToast(message, 'error');
+      return { success: false, error: message };
     }
-    const updated = storageService.updateAppointment(id, { status });
-    setAppointments((prev) => prev.map((a) => (a.id === id ? { ...a, status } : a)));
-    showToast(`Status updated to ${status}.`);
-    return { success: true, appointment: updated };
   };
 
   const toggleDoctorStatus = async (id) => {
