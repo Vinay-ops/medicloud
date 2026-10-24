@@ -215,7 +215,7 @@ export const LandingPage = () => {
               key={doc.id}
               doctor={doc}
               onBook={(doctor) => setBookingDoctor(doctor)}
-              onViewDetails={(doctor) => navigate(`/doctors?id=${doctor.id}`)}
+              onViewDetails={(doctor) => navigate(`/doctors/${doctor.id}`)}
             />
           ))}
         </div>
